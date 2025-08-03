@@ -15,49 +15,115 @@ const GoogleOauth = (props) => {
 
   //handle google Oauth
   const handleGoogleOauth = () => {
-    signInWithPopup(auth, providerForGoogle).then((data) => {
-      if (type === "login") {
-        localStorage.setItem("userPhoto", data.user.photoURL);
-        const email = data.user.email
-          ? data.user.email
-          : data.user.providerData[0]?.email;
-        const password = data.user.uid;
-        props
-          .loginForOAuth({ email, password })
-          .then(() => {
-            navigate("/");
-          })
-          .catch(() => {
-            navigate("/login");
-          });
-      } else {
-        const name = data.user.providerData[0].displayName;
-        const email = data.user.providerData[0].email
-          ? data.user.providerData[0].email
-          : data.user.email;
-        const password = data.user.uid + "!";
-        const imageUrl = data.user.providerData[0].photoURL
-          ? data.user.providerData[0].photoURL
-          : data.user.photoURL;
-        const provider = data.user.providerData[0].providerId;
-        const uId = data.user.providerData[0].uid;
-        props
-          .createUserForOauth({
-            name,
-            email,
-            password,
-            imageUrl,
-            provider,
-            uId,
-          })
-          .then((res) => {
-            navigate("/login");
-          })
-          .catch(() => {
-            navigate("/signup");
-          });
-      }
+    console.log("Starting Google OAuth process...");
+    console.log("Auth object:", auth);
+    console.log("Provider object:", providerForGoogle);
+    
+    if (!auth) {
+      console.error("Auth is null - Firebase not initialized");
+      props.alert({
+        severity: "error",
+        summary: "Firebase Error",
+        detail: "Firebase authentication is not initialized. Please check configuration.",
+      });
+      return;
+    }
+    
+    // Show loading state
+    props.alert({
+      severity: "info",
+      summary: "Google Sign-In",
+      detail: "Opening Google account selector...",
     });
+    
+    signInWithPopup(auth, providerForGoogle)
+      .then((data) => {
+        console.log("Google Sign-In successful:", data);
+        
+        // Show success message
+        props.alert({
+          severity: "success",
+          summary: "Google Sign-In",
+          detail: `Signed in as ${data.user.email}`,
+        });
+        
+        if (type === "login") {
+          localStorage.setItem("userPhoto", data.user.photoURL);
+          const email = data.user.email
+            ? data.user.email
+            : data.user.providerData[0]?.email;
+          const password = data.user.uid;
+          const name = data.user.displayName || data.user.providerData[0]?.displayName || email.split('@')[0];
+          const imageUrl = data.user.photoURL || data.user.providerData[0]?.photoURL;
+          const provider = 'google';
+          const providerId = data.user.uid;
+          
+          props
+            .loginForOAuth({ 
+              email, 
+              password, 
+              name, 
+              imageUrl, 
+              provider, 
+              providerId 
+            })
+            .then(() => {
+              navigate("/");
+            })
+            .catch((error) => {
+              console.error("OAuth login failed:", error);
+              navigate("/login");
+            });
+        } else {
+          const name = data.user.providerData[0].displayName;
+          const email = data.user.providerData[0].email
+            ? data.user.providerData[0].email
+            : data.user.email;
+          const password = data.user.uid + "!";
+          const imageUrl = data.user.providerData[0].photoURL
+            ? data.user.providerData[0].photoURL
+            : data.user.photoURL;
+          const provider = data.user.providerData[0].providerId;
+          const uId = data.user.providerData[0].uid;
+          props
+            .createUserForOauth({
+              name,
+              email,
+              password,
+              imageUrl,
+              provider,
+              uId,
+            })
+            .then((res) => {
+              navigate("/login");
+            })
+            .catch(() => {
+              navigate("/signup");
+            });
+        }
+      })
+      .catch((error) => {
+        console.error("Google Sign-In Error:", error);
+        let errorMessage = "Google Sign-In failed. Please try again.";
+        
+        if (error.code === "auth/operation-not-allowed") {
+          errorMessage = "Google Sign-In is not enabled. Please contact support.";
+        } else if (error.code === "auth/popup-closed-by-user") {
+          errorMessage = "Sign-In was cancelled.";
+        } else if (error.code === "auth/popup-blocked") {
+          errorMessage = "Pop-up was blocked. Please allow pop-ups for this site.";
+        } else if (error.code === "auth/unauthorized-domain") {
+          errorMessage = `This domain (${window.location.hostname}) is not authorized for Google Sign-In. Please contact support or try using localhost:3000.`;
+        } else if (error.code === "auth/network-request-failed") {
+          errorMessage = "Network error. Please check your internet connection.";
+        }
+        
+        props.alert({
+          severity: "error",
+          summary: "Google Sign-In Error",
+          detail: errorMessage,
+        });
+      });
   };
   return (
     <>

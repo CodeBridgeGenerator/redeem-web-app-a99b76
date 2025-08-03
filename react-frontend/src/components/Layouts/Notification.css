@@ -74,3 +74,26 @@
 .notification-item.unread {
   background-color: #e0f7fa; /* Light blue background for unread */
 }
+
+/* Active Navigation Link Styles */
+.active-link {
+  background-color: #e3f2fd !important;
+  color: #1976d2 !important;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.active-link:hover {
+  background-color: #bbdefb !important;
+  color: #1565c0 !important;
+}
+
+.layout-topbar-button.active-link {
+  background-color: #e3f2fd !important;
+  color: #1976d2 !important;
+}
+
+.layout-topbar-button.active-link:hover {
+  background-color: #bbdefb !important;
+  color: #1565c0 !important;
+}

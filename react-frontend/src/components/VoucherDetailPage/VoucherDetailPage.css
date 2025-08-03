@@ -1,0 +1,396 @@
+/* Voucher Detail Page Styles */
+.voucher-detail-page {
+  font-family: "Public Sans", "Noto Sans", sans-serif;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .voucher-detail-page header {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .voucher-detail-page .main-content {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .voucher-detail-page .page-title {
+    font-size: 1.75rem !important;
+    min-width: auto !important;
+  }
+  
+  .voucher-detail-page .voucher-info-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .voucher-detail-page .nav-links {
+    gap: 0.5rem !important;
+  }
+  
+  .voucher-detail-page .nav-links a {
+    font-size: 0.875rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .voucher-detail-page .page-title {
+    font-size: 1.5rem !important;
+  }
+  
+  .voucher-detail-page .voucher-main-content {
+    flex-direction: column !important;
+  }
+  
+  .voucher-detail-page .voucher-image {
+    aspect-ratio: 16/9 !important;
+  }
+  
+  .voucher-detail-page .breadcrumb {
+    flex-wrap: wrap !important;
+    gap: 0.25rem !important;
+  }
+}
+
+/* Voucher image styling */
+.voucher-image {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.voucher-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.1) 100%);
+  pointer-events: none;
+}
+
+/* Enhanced Button Styling */
+.redeem-btn-small {
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(11, 108, 218, 0.2);
+}
+
+.redeem-btn-small:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(11, 108, 218, 0.3);
+}
+
+.redeem-btn-main {
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(11, 108, 218, 0.2);
+}
+
+.redeem-btn-main:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(11, 108, 218, 0.3);
+}
+
+.add-to-cart-btn {
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(11, 108, 218, 0.1);
+}
+
+.add-to-cart-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(11, 108, 218, 0.2);
+}
+
+.redeem-btn-small:active,
+.redeem-btn-main:active,
+.add-to-cart-btn:active {
+  transform: translateY(0);
+}
+
+/* Enhanced Back Button Styling */
+.back-button {
+  transition: all 0.2s ease;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.back-button:hover {
+  transform: translateX(-2px);
+  background-color: rgba(11, 108, 218, 0.05);
+  box-shadow: 0 2px 8px rgba(11, 108, 218, 0.1);
+}
+
+/* Loading animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Smooth transitions */
+.redeem-btn-small,
+.redeem-btn-main {
+  transition: all 0.2s ease;
+}
+
+.back-button {
+  transition: all 0.2s ease;
+}
+
+.nav-links a {
+  transition: all 0.2s ease;
+}
+
+/* Focus states for accessibility */
+.redeem-btn-small:focus,
+.redeem-btn-main:focus {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.back-button:focus {
+  outline: 2px solid #0b6cda;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.nav-links a:focus {
+  outline: 2px solid #0b6cda;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Breadcrumb styling */
+.breadcrumb-link {
+  transition: color 0.2s ease;
+}
+
+.breadcrumb-link:hover {
+  text-decoration: underline;
+}
+
+/* Voucher information grid */
+.voucher-info-grid {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.voucher-info-row {
+  transition: background-color 0.2s ease;
+}
+
+.voucher-info-row:hover {
+  background-color: #f8fafc;
+}
+
+/* Enhanced Voucher Main Content Layout */
+.voucher-main-content {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.voucher-details {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.voucher-header {
+  margin-bottom: 1rem;
+}
+
+.voucher-title {
+  color: #0d141c;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+
+.voucher-description {
+  line-height: 1.6;
+  color: #49709c;
+  font-size: 1rem;
+}
+
+.voucher-highlights {
+  background: rgba(11, 108, 218, 0.02);
+  border-radius: 0.75rem;
+  margin: 1rem 0;
+}
+
+.highlight-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 120px;
+}
+
+.highlight-label {
+  color: #49709c;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.highlight-value {
+  color: #0d141c;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.voucher-actions {
+  margin-top: 1rem;
+}
+
+/* Voucher description text */
+.voucher-description {
+  line-height: 1.6;
+  color: #49709c;
+}
+
+/* Voucher title styling */
+.voucher-title {
+  color: #0d141c;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Enhanced Terms Section */
+.terms-section {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.terms-header {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.terms-content {
+  background: white;
+}
+
+.terms-text {
+  line-height: 1.7;
+  color: #374151;
+  font-size: 0.875rem;
+  text-align: justify;
+}
+
+/* Enhanced Action Section */
+.action-section {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.action-section h3 {
+  color: #0d141c;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* Value display */
+.value-display {
+  font-weight: 600;
+  color: #0d141c;
+}
+
+/* Points display */
+.points-display {
+  font-weight: 600;
+  color: #0d141c;
+}
+
+/* Valid until display */
+.valid-until-display {
+  color: #0d141c;
+}
+
+/* Empty state styling */
+.empty-state {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 1rem;
+}
+
+/* Notification button styling */
+.notification-btn {
+  transition: all 0.2s ease;
+}
+
+.notification-btn:hover {
+  background-color: #d1d5db !important;
+}
+
+/* Container queries for responsive layout */
+@container (min-width: 768px) {
+  .voucher-main-content {
+    flex-direction: row;
+  }
+  
+  .voucher-image {
+    flex: 1;
+  }
+  
+  .voucher-details {
+    flex: 1;
+    padding-left: 1rem;
+  }
+}
+
+/* Grid subgrid support */
+@supports (grid-template-columns: subgrid) {
+  .voucher-info-grid {
+    display: grid;
+    grid-template-columns: 20% 1fr;
+    gap: 1.5rem;
+  }
+  
+  .voucher-info-row {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    align-items: center;
+    padding: 1.25rem 0;
+    border-top: 1px solid #cedae8;
+  }
+}
+
+/* Fallback for browsers without subgrid support */
+@supports not (grid-template-columns: subgrid) {
+  .voucher-info-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .voucher-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 0;
+    border-top: 1px solid #cedae8;
+  }
+  
+  .voucher-info-label {
+    flex: 0 0 20%;
+    color: #49709c;
+    font-size: 0.875rem;
+  }
+  
+  .voucher-info-value {
+    flex: 1;
+    color: #0d141c;
+    font-size: 0.875rem;
+  }
+} 

@@ -1,15 +1,15 @@
-import { Column } from 'primereact/column';
-import { DataTable } from 'primereact/datatable';
-import React, { useState, useRef, useEffect} from 'react';
-import _ from 'lodash';
-import { Button } from 'primereact/button';
-import { Badge } from 'primereact/badge';
-import { Image } from 'primereact/image';
-import { Checkbox } from 'primereact/checkbox';
+import { Column } from "primereact/column";
+import { DataTable } from "primereact/datatable";
+import React, { useState, useRef, useEffect } from "react";
+import _ from "lodash";
+import { Button } from "primereact/button";
+import { Badge } from "primereact/badge";
+import { Image } from "primereact/image";
+import { Checkbox } from "primereact/checkbox";
 import { useParams } from "react-router-dom";
 import moment from "moment";
 import UploadService from "../../../services/UploadService";
-import { InputText } from 'primereact/inputtext';
+import { InputText } from "primereact/inputtext";
 import { Dialog } from "primereact/dialog";
 import { MultiSelect } from "primereact/multiselect";
 import DownloadCSV from "../../../utils/DownloadCSV";
@@ -20,32 +20,74 @@ import CopyIcon from "../../../assets/media/Clipboard.png";
 import DuplicateIcon from "../../../assets/media/Duplicate.png";
 import DeleteIcon from "../../../assets/media/Trash.png";
 
-const VoucherDataTable = ({ items, fields, onEditRow, onRowDelete, onRowClick, searchDialog, setSearchDialog,   showUpload, setShowUpload,
-    showFilter, setShowFilter,
-    showColumns, setShowColumns, onClickSaveFilteredfields ,
-    selectedFilterFields, setSelectedFilterFields,
-    selectedHideFields, setSelectedHideFields, onClickSaveHiddenfields, loading, user,   selectedDelete,
-  setSelectedDelete, onCreateResult}) => {
-    const dt = useRef(null);
-    const urlParams = useParams();
-    const [globalFilter, setGlobalFilter] = useState('');
+const VoucherDataTable = ({
+  items,
+  fields,
+  onEditRow,
+  onRowDelete,
+  onRowClick,
+  searchDialog,
+  setSearchDialog,
+  showUpload,
+  setShowUpload,
+  showFilter,
+  setShowFilter,
+  showColumns,
+  setShowColumns,
+  onClickSaveFilteredfields,
+  selectedFilterFields,
+  setSelectedFilterFields,
+  selectedHideFields,
+  setSelectedHideFields,
+  onClickSaveHiddenfields,
+  loading,
+  user,
+  selectedDelete,
+  setSelectedDelete,
+  onCreateResult,
+}) => {
+  const dt = useRef(null);
+  const urlParams = useParams();
+  const [globalFilter, setGlobalFilter] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
   const [data, setData] = useState([]);
 
-const pTemplate0 = (rowData, { rowIndex }) => <p >{rowData.voucherId}</p>
-const pTemplate1 = (rowData, { rowIndex }) => <p >{rowData.categoryId}</p>
-const pTemplate2 = (rowData, { rowIndex }) => <p >{rowData.userId}</p>
-const badgeTemplate3 = (rowData, { rowIndex }) => <Badge value={Number(rowData.points)}  />
-const pTemplate4 = (rowData, { rowIndex }) => <p >{rowData.title}</p>
-const imageTemplate5 = (rowData, { rowIndex }) => <Image src={rowData.image}  alt="Image" height="60px" />
-const inputTextareaTemplate6 = (rowData, { rowIndex }) => <p >{rowData.description}</p>
-const inputTextareaTemplate7 = (rowData, { rowIndex }) => <p >{rowData.termsAndCondition}</p>
-const checkboxTemplate8 = (rowData, { rowIndex }) => <Checkbox checked={rowData.isLatest}  />
-    const editTemplate = (rowData, { rowIndex }) => <Button onClick={() => onEditRow(rowData, rowIndex)} icon={`pi ${rowData.isEdit ? "pi-check" : "pi-pencil"}`} className={`p-button-rounded p-button-text ${rowData.isEdit ? "p-button-success" : "p-button-warning"}`} />;
-    const deleteTemplate = (rowData, { rowIndex }) => <Button onClick={() => onRowDelete(rowData._id)} icon="pi pi-times" className="p-button-rounded p-button-danger p-button-text" />;
-    
-      const checkboxTemplate = (rowData) => (
+  const pTemplate0 = (rowData, { rowIndex }) => <p>{rowData.voucherId}</p>;
+  const pTemplate1 = (rowData, { rowIndex }) => <p>{rowData.categoryId}</p>;
+  const pTemplate2 = (rowData, { rowIndex }) => <p>{rowData.userId}</p>;
+  const badgeTemplate3 = (rowData, { rowIndex }) => (
+    <Badge value={Number(rowData.points)} />
+  );
+  const pTemplate4 = (rowData, { rowIndex }) => <p>{rowData.title}</p>;
+  const imageTemplate5 = (rowData, { rowIndex }) => (
+    <Image src={rowData.image} alt="Image" height="60px" />
+  );
+  const inputTextareaTemplate6 = (rowData, { rowIndex }) => (
+    <p>{rowData.description}</p>
+  );
+  const inputTextareaTemplate7 = (rowData, { rowIndex }) => (
+    <p>{rowData.termsAndCondition}</p>
+  );
+  const checkboxTemplate8 = (rowData, { rowIndex }) => (
+    <Checkbox checked={rowData.isLatest} />
+  );
+  const editTemplate = (rowData, { rowIndex }) => (
+    <Button
+      onClick={() => onEditRow(rowData, rowIndex)}
+      icon={`pi ${rowData.isEdit ? "pi-check" : "pi-pencil"}`}
+      className={`p-button-rounded p-button-text ${rowData.isEdit ? "p-button-success" : "p-button-warning"}`}
+    />
+  );
+  const deleteTemplate = (rowData, { rowIndex }) => (
+    <Button
+      onClick={() => onRowDelete(rowData._id)}
+      icon="pi pi-times"
+      className="p-button-rounded p-button-danger p-button-text"
+    />
+  );
+
+  const checkboxTemplate = (rowData) => (
     <Checkbox
       checked={selectedItems.some((item) => item._id === rowData._id)}
       onChange={(e) => {
@@ -86,7 +128,7 @@ const checkboxTemplate8 = (rowData, { rowIndex }) => <Checkbox checked={rowData.
       console.error("Failed to delete selected records", error);
     }
   };
-    
+
   const handleMessage = () => {
     setShowDialog(true); // Open the dialog
   };
@@ -95,10 +137,10 @@ const checkboxTemplate8 = (rowData, { rowIndex }) => <Checkbox checked={rowData.
     setShowDialog(false); // Close the dialog
   };
 
-    return (
-        <>
-        <DataTable 
-           value={items}
+  return (
+    <>
+      <DataTable
+        value={items}
         ref={dt}
         removableSort
         onRowClick={onRowClick}
@@ -116,26 +158,95 @@ const checkboxTemplate8 = (rowData, { rowIndex }) => <Checkbox checked={rowData.
         selection={selectedItems}
         onSelectionChange={(e) => setSelectedItems(e.value)}
         onCreateResult={onCreateResult}
-        >
-                <Column
+      >
+        <Column
           selectionMode="multiple"
           headerStyle={{ width: "3rem" }}
           body={checkboxTemplate}
         />
-<Column field="voucherId" header="Voucher ID" body={pTemplate0} filter={selectedFilterFields.includes("voucherId")} hidden={selectedHideFields?.includes("voucherId")}  sortable style={{ minWidth: "8rem" }} />
-<Column field="categoryId" header="Category ID" body={pTemplate1} filter={selectedFilterFields.includes("categoryId")} hidden={selectedHideFields?.includes("categoryId")}  sortable style={{ minWidth: "8rem" }} />
-<Column field="userId" header="User ID" body={pTemplate2} filter={selectedFilterFields.includes("userId")} hidden={selectedHideFields?.includes("userId")}  sortable style={{ minWidth: "8rem" }} />
-<Column field="points" header="Points" body={badgeTemplate3} filter={selectedFilterFields.includes("points")} hidden={selectedHideFields?.includes("points")}  sortable style={{ minWidth: "8rem" }} />
-<Column field="title" header="Title" body={pTemplate4} filter={selectedFilterFields.includes("title")} hidden={selectedHideFields?.includes("title")}  sortable style={{ minWidth: "8rem" }} />
-<Column field="image" header="Image" body={imageTemplate5} filter={selectedFilterFields.includes("image")} hidden={selectedHideFields?.includes("image")}  sortable style={{ minWidth: "8rem" }} />
-<Column field="description" header="Description" body={inputTextareaTemplate6} filter={selectedFilterFields.includes("description")} hidden={selectedHideFields?.includes("description")}  sortable style={{ minWidth: "8rem" }} />
-<Column field="termsAndCondition" header="Terms And Condition" body={inputTextareaTemplate7} filter={selectedFilterFields.includes("termsAndCondition")} hidden={selectedHideFields?.includes("termsAndCondition")}  sortable style={{ minWidth: "8rem" }} />
-<Column field="isLatest" header="Is Latest" body={checkboxTemplate8} filter={selectedFilterFields.includes("isLatest")} hidden={selectedHideFields?.includes("isLatest")}  style={{ minWidth: "8rem" }} />
-            <Column header="Edit" body={editTemplate} />
-            <Column header="Delete" body={deleteTemplate} />
-            
-        </DataTable>
-
+        <Column
+          field="voucherId"
+          header="Voucher ID"
+          body={pTemplate0}
+          filter={selectedFilterFields.includes("voucherId")}
+          hidden={selectedHideFields?.includes("voucherId")}
+          sortable
+          style={{ minWidth: "8rem" }}
+        />
+        <Column
+          field="categoryId"
+          header="Category ID"
+          body={pTemplate1}
+          filter={selectedFilterFields.includes("categoryId")}
+          hidden={selectedHideFields?.includes("categoryId")}
+          sortable
+          style={{ minWidth: "8rem" }}
+        />
+        <Column
+          field="userId"
+          header="User ID"
+          body={pTemplate2}
+          filter={selectedFilterFields.includes("userId")}
+          hidden={selectedHideFields?.includes("userId")}
+          sortable
+          style={{ minWidth: "8rem" }}
+        />
+        <Column
+          field="points"
+          header="Points"
+          body={badgeTemplate3}
+          filter={selectedFilterFields.includes("points")}
+          hidden={selectedHideFields?.includes("points")}
+          sortable
+          style={{ minWidth: "8rem" }}
+        />
+        <Column
+          field="title"
+          header="Title"
+          body={pTemplate4}
+          filter={selectedFilterFields.includes("title")}
+          hidden={selectedHideFields?.includes("title")}
+          sortable
+          style={{ minWidth: "8rem" }}
+        />
+        <Column
+          field="image"
+          header="Image"
+          body={imageTemplate5}
+          filter={selectedFilterFields.includes("image")}
+          hidden={selectedHideFields?.includes("image")}
+          sortable
+          style={{ minWidth: "8rem" }}
+        />
+        <Column
+          field="description"
+          header="Description"
+          body={inputTextareaTemplate6}
+          filter={selectedFilterFields.includes("description")}
+          hidden={selectedHideFields?.includes("description")}
+          sortable
+          style={{ minWidth: "8rem" }}
+        />
+        <Column
+          field="termsAndCondition"
+          header="Terms And Condition"
+          body={inputTextareaTemplate7}
+          filter={selectedFilterFields.includes("termsAndCondition")}
+          hidden={selectedHideFields?.includes("termsAndCondition")}
+          sortable
+          style={{ minWidth: "8rem" }}
+        />
+        <Column
+          field="isLatest"
+          header="Is Latest"
+          body={checkboxTemplate8}
+          filter={selectedFilterFields.includes("isLatest")}
+          hidden={selectedHideFields?.includes("isLatest")}
+          style={{ minWidth: "8rem" }}
+        />
+        <Column header="Edit" body={editTemplate} />
+        <Column header="Delete" body={deleteTemplate} />
+      </DataTable>
 
       {selectedItems.length > 0 ? (
         <div
@@ -311,20 +422,28 @@ const checkboxTemplate8 = (rowData, { rowIndex }) => <Checkbox checked={rowData.
         </div>
       ) : null}
 
-
-        <Dialog header="Upload Voucher Data" visible={showUpload} onHide={() => setShowUpload(false)}>
-        <UploadService 
-          user={user} 
-          serviceName="voucher"            
+      <Dialog
+        header="Upload Voucher Data"
+        visible={showUpload}
+        onHide={() => setShowUpload(false)}
+      >
+        <UploadService
+          user={user}
+          serviceName="voucher"
           onUploadComplete={() => {
             setShowUpload(false); // Close the dialog after upload
-          }}/>
+          }}
+        />
       </Dialog>
 
-      <Dialog header="Search Voucher" visible={searchDialog} onHide={() => setSearchDialog(false)}>
-      Search
-    </Dialog>
-    <Dialog
+      <Dialog
+        header="Search Voucher"
+        visible={searchDialog}
+        onHide={() => setSearchDialog(false)}
+      >
+        Search
+      </Dialog>
+      <Dialog
         header="Filter Users"
         visible={showFilter}
         onHide={() => setShowFilter(false)}
@@ -349,7 +468,7 @@ const checkboxTemplate8 = (rowData, { rowIndex }) => <Checkbox checked={rowData.
             console.log(selectedFilterFields);
             onClickSaveFilteredfields(selectedFilterFields);
             setSelectedFilterFields(selectedFilterFields);
-            setShowFilter(false)
+            setShowFilter(false);
           }}
         ></Button>
       </Dialog>
@@ -379,12 +498,12 @@ const checkboxTemplate8 = (rowData, { rowIndex }) => <Checkbox checked={rowData.
             console.log(selectedHideFields);
             onClickSaveHiddenfields(selectedHideFields);
             setSelectedHideFields(selectedHideFields);
-            setShowColumns(false)
+            setShowColumns(false);
           }}
         ></Button>
       </Dialog>
-        </>
-    );
+    </>
+  );
 };
 
 export default VoucherDataTable;

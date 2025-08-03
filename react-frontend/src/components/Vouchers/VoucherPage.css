@@ -1,0 +1,379 @@
+/* Voucher Page Styles */
+.voucher-page {
+  font-family: "Public Sans", "Noto Sans", sans-serif;
+}
+
+/* Main Content */
+.main-content {
+  padding: 0 10rem;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 60rem;
+  flex: 1;
+}
+
+/* Page Title */
+.page-title {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.page-title p {
+  color: #111418;
+  letter-spacing: 0.025em;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.25;
+  min-width: 18rem;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Vouchers Container */
+.vouchers-container {
+  padding: 1rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.voucher-card-wrapper {
+  margin-bottom: 1rem;
+}
+
+.voucher-card-horizontal {
+  display: flex;
+  align-items: stretch;
+  justify-content: between;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f1e9ea;
+}
+
+.voucher-content-section {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.voucher-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.voucher-title {
+  color: #191011;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.voucher-subtitle {
+  color: #8b5b5d;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.voucher-actions-section {
+  display: flex;
+  align-items: center;
+}
+
+.voucher-actions-section .p-button {
+  height: 32px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0 1rem;
+  border-radius: 0.75rem;
+  background-color: #f1e9ea;
+  border-color: #f1e9ea;
+  color: #191011;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-direction: row-reverse;
+}
+
+.voucher-actions-section .p-button:hover {
+  background-color: #e8b4b7;
+  border-color: #e8b4b7;
+}
+
+.voucher-actions-section .p-button .p-button-icon {
+  font-size: 0.875rem;
+}
+
+.voucher-image-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.voucher-image-horizontal {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  aspect-ratio: 16/9;
+}
+
+.voucher-redeem-section {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.75rem 1rem;
+}
+
+.p-button-redeem {
+  height: 40px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  padding: 0 1rem;
+  border-radius: 0.75rem;
+  background-color: #e8b4b7;
+  border-color: #e8b4b7;
+  color: #191011;
+  min-width: 84px;
+  max-width: 480px;
+  white-space: nowrap;
+}
+
+.p-button-redeem:hover {
+  background-color: #d4a5a8;
+  border-color: #d4a5a8;
+  transform: translateY(-1px);
+}
+
+.p-button-redeem:disabled {
+  background-color: #9ca3af;
+  border-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Loading State */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #607285;
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  color: #607285;
+}
+
+.empty-state h3 {
+  margin-bottom: 0.5rem;
+  color: #111418;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.empty-state p {
+  color: #607285;
+  font-size: 0.875rem;
+}
+
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 0 1rem;
+  }
+  
+  .vouchers-container {
+    padding: 0.5rem;
+  }
+  
+  .voucher-card-horizontal {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .voucher-content-section {
+    flex: 1;
+  }
+  
+  .voucher-image-section {
+    flex: 1;
+  }
+  
+  .voucher-image-horizontal {
+    height: 160px;
+  }
+  
+  .voucher-title {
+    font-size: 0.9rem;
+  }
+  
+  .voucher-subtitle {
+    font-size: 0.8rem;
+  }
+  
+  .voucher-actions-section .p-button {
+    height: 28px;
+    font-size: 0.8rem;
+  }
+  
+  .p-button-redeem {
+    height: 36px;
+    font-size: 0.8rem;
+  }
+  
+  .page-title p {
+    font-size: 1.5rem;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .vouchers-container {
+    padding: 0.25rem;
+  }
+  
+  .voucher-card-horizontal {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+  
+  .voucher-image-horizontal {
+    height: 120px;
+  }
+  
+  .voucher-title {
+    font-size: 0.85rem;
+  }
+  
+  .voucher-subtitle {
+    font-size: 0.75rem;
+  }
+  
+  .voucher-actions-section .p-button {
+    height: 26px;
+    font-size: 0.75rem;
+    padding: 0 0.75rem;
+  }
+  
+  .p-button-redeem {
+    height: 32px;
+    font-size: 0.75rem;
+    padding: 0 0.75rem;
+  }
+  
+  .back-button {
+    gap: 0.5rem;
+  }
+}
+
+/* Voucher Details Dialog Styles */
+.voucher-details-dialog .p-dialog-content {
+  padding: 1.5rem;
+}
+
+.voucher-details {
+  padding: 1rem 0;
+}
+
+.voucher-image-large {
+  width: 100%;
+  height: 256px;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.voucher-image-large img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.voucher-info h3 {
+  color: #1f2937;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.voucher-info p {
+  color: #6b7280;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.user-points-info {
+  background-color: #f8fafc;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.terms-section {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  margin-top: 1rem;
+}
+
+.terms-section h4 {
+  color: #1f2937;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.terms-section p {
+  color: #6b7280;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.voucher-actions-dialog {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.voucher-actions-dialog .p-button {
+  height: 40px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+.voucher-actions-dialog .p-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+} 

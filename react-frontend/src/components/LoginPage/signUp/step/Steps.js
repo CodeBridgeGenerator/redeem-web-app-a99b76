@@ -6,12 +6,13 @@ const Steps = (props) => {
 
   return (
     <StepsProvider step={currentStep} onChange={onChange}>
-      <div className="flex justify-between w-full">
+      <div className="flex justify-between w-full mobile-steps-container">
         {steps.map((step, index) => {
           const lastStep = index === steps.length - 1;
           const isCompletedStep = index + 1 < currentStep;
           return (
             <div
+              key={step.key || index}
               className={classNames(
                 "flex items-center",
                 !lastStep ? "flex-auto" : "flex-initial",
@@ -25,8 +26,9 @@ const Steps = (props) => {
               />
               {!lastStep && (
                 <div
+                  key={`connector-${index}`}
                   className={classNames(
-                    "w-full h-[2px] mx-2",
+                    "w-full h-[2px] mx-2 mobile-step-connector",
                     isCompletedStep ? "bg-primary" : "bg-grey",
                   )}
                 />

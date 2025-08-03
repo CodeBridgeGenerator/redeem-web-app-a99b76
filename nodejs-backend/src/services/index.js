@@ -70,6 +70,7 @@ const cartItems = require("./cartItems/cartItems.service.js");
 const cartItemHistory = require("./cartItemHistory/cartItemHistory.service.js");
 const voucher = require("./voucher/voucher.service.js");
 const category = require("./category/category.service.js");
+const emailRoles = require("./emailRoles/emailRoles.service.js");
 // ~cb-add-require-service-name~
 
 // eslint-disable-next-line no-unused-vars
@@ -127,5 +128,6 @@ module.exports = function (app) {
   app.configure(cartItemHistory);
   app.configure(voucher);
   app.configure(category);
+  app.configure(emailRoles);
   // ~cb-add-configure-service-name~
 };

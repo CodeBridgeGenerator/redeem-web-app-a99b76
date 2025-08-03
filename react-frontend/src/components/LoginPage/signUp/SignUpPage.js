@@ -5,6 +5,8 @@ import client from "../../../services/restClient";
 import _ from "lodash";
 import SignUpStep from "./SignUpStep";
 import { Toast } from "primereact/toast";
+import { auth, providerForGoogle, isConfigured } from "../Firebase.config";
+import { signInWithPopup } from "firebase/auth";
 
 import { emailRegex } from "../../../utils/regex";
 import { codeGen } from "../../../utils/codegen";
@@ -12,6 +14,7 @@ import EnterDetailsStep from "./step/EnterDetails";
 import VerificationStep from "./step/Verification";
 import SetUpPassword from "./step/SetUpPassword";
 import AppFooter from "../../Layouts/AppFooter";
+import "./SignUpPage.css";
 
 const SignUpPage = (props) => {
   const navigate = useNavigate();
@@ -48,6 +51,77 @@ const SignUpPage = (props) => {
     });
   };
 
+  // Google Sign In Handler
+  const handleGoogleSignIn = async () => {
+    if (!isConfigured) {
+      props.alert({
+        title: "Firebase Configuration Required",
+        type: "warning",
+        message: "Please configure Firebase settings in Firebase.config.js",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, providerForGoogle);
+      const user = result.user;
+      
+      // Check if user already exists
+      const existingUser = await client.service("users").find({
+        query: {
+          email: user.email,
+          $limit: 1
+        }
+      });
+
+      if (existingUser.data.length > 0) {
+        props.alert({
+          title: "Account Already Exists",
+          type: "warning",
+          message: "An account with this email already exists. Please login instead.",
+        });
+        navigate("/login");
+        return;
+      }
+
+      // Create new user with Google OAuth data
+      const userData = {
+        name: user.displayName || user.email.split('@')[0], // Map to name field
+        username: user.displayName || user.email.split('@')[0], // Map to username field
+        email: user.email,
+        password: user.uid, // Use UID as password for OAuth users
+        profileImage: user.photoURL, // Map to profileImage field
+        isActive: true, // Set user as active
+        // Remove points: 0 to let backend hook set 500 points
+        address: "", // Empty address
+        aboutMe: JSON.stringify({
+          provider: 'google',
+          providerId: user.uid,
+          emailVerified: user.emailVerified,
+          originalName: user.displayName
+        }),
+        phoneNumber: "" // Empty phone number
+      };
+
+      await props.createUserForOauth(userData);
+      props.alert({
+        title: "Account Created Successfully",
+        type: "success",
+        message: "Your account has been created with Google. You can now login.",
+      });
+      navigate("/login");
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      props.alert({
+        title: "Google Sign In Failed",
+        type: "error",
+        message: error.message || "Failed to sign in with Google",
+      });
+    }
+    setLoading(false);
+  };
+
   const _getInviteEmail = async () => {
     return await client.service("userInvites").find({
       query: {
@@ -76,7 +150,7 @@ const SignUpPage = (props) => {
       return;
     }
     if (!name.length) {
-      setNameError("name is required");
+      setNameError("Username is required");
       return;
     }
     resendMail();
@@ -168,10 +242,10 @@ const SignUpPage = (props) => {
     }
 
     if (!name.length) {
-      setNameError("name is required");
+      setNameError("Username is required");
       isValid = false;
     } else if (name.length < 3) {
-      setNameError("Must be at least 3 characters long");
+      setNameError("Username must be at least 3 characters long");
       isValid = false;
     }
     if (!password.length) {
@@ -179,7 +253,7 @@ const SignUpPage = (props) => {
       isValid = false;
     } else if (password.length < 6) {
       setPasswordError(
-        "Must be at least 6 characters long and have at least one letter, digit, uppercase, lowercase and symbol"
+        "Must be at least 6 characters long and have at least one letter, digit, uppercase, lowercase and symbol",
       );
       isValid = false;
     }
@@ -199,7 +273,8 @@ const SignUpPage = (props) => {
         if (user?.data?.length === 0) {
           props
             .createUser({
-              name,
+              name: name,
+              username: name,
               email: email,
               password,
               status: true,
@@ -238,19 +313,19 @@ const SignUpPage = (props) => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen align-items-center justify-content-center bg-[#F8F9FA]">
+    <div className="signup-page">
       <Toast ref={toast} position="bottom-center" />
-      <div className="fixed top-0 left-0 w-full">
-        <div className="flex items-center justify-between p-5 bg-white shadow">
+      <div className="signup-header">
+        <div className="signup-header-content">
           <div className="basis-auto">
             <p className="text-xl font-semibold text-primary"></p>
           </div>
-          <div className="basis-[700px]">
+          <div className="signup-step-container">
             <SignUpStep step={step} />
           </div>
           <div className="basis-auto"></div>
         </div>
-        <div className="flex items-center gap-2 p-5 bg-transparent">
+        <div className="signup-back-link">
           <Link
             to="/login"
             className="flex items-center gap-2 font-semibold text-primary"
@@ -260,7 +335,7 @@ const SignUpPage = (props) => {
           </Link>
         </div>
       </div>
-      <div className="flex flex-col items-center justify-center flex-1 px-3">
+      <div className="signup-main-content">
         {step === 1 && (
           <EnterDetailsStep
             email={email}
@@ -273,6 +348,7 @@ const SignUpPage = (props) => {
             setNameError={setNameError}
             onNext={onFinishStepOne}
             loading={loading}
+            onGoogleSignIn={handleGoogleSignIn}
           />
         )}
         {step === 2 && (
@@ -315,6 +391,7 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => ({
   createUser: (data) => dispatch.auth.createUser(data),
   alert: (data) => dispatch.toast.alert(data),
+  createUserForOauth: (data) => dispatch.auth.createUserForOauth(data),
 });
 
 export default connect(mapState, mapDispatch)(SignUpPage);

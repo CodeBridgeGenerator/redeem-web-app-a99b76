@@ -53,25 +53,20 @@ const SetUpPassword = (props) => {
   const isSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
 
   return (
-    <div className="w-full max-w-[400px]">
-      <div className="px-3 text-center">
-        <h3 className="font-semibold">Set up your password</h3>
-        <p>
+    <div className="signup-form-container">
+      <div className="text-center mb-6">
+        <h3 className="font-semibold text-xl mb-2">Set up your password</h3>
+        <p className="text-gray-600">
           Please enter a strong password that meets the required security
           criteria for your account.
         </p>
       </div>
-      <div className="mt-6">
-        <div className="w-full mb-4">
-          <p className="m-0">New Password</p>
-          <span className="w-full p-input-icon-right">
-            <i
-              className={`pi ${maskPassword ? "pi-eye" : "pi-eye-slash"} cursor-pointer`}
-              title={`${maskPassword ? "Show" : "Hide"} password`}
-              onMouseDown={() => setMaskPassword(false)}
-              onMouseUp={() => setMaskPassword(true)}
-              onMouseLeave={() => setMaskPassword(true)}
-            />
+      <div className="space-y-4">
+        <div className="w-full">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            New Password
+          </label>
+          <div className="relative">
             <InputText
               type={maskPassword ? "password" : "text"}
               placeholder="Enter your password"
@@ -80,12 +75,21 @@ const SetUpPassword = (props) => {
                 setPassword(e.target.value);
                 setPasswordError(null);
               }}
-              className={classNames(passwordError ? "p-invalid" : "", "w-full")}
+              className={classNames(passwordError ? "p-invalid" : "", "w-full mobile-input pr-12")}
               onKeyDown={onEnter}
-            ></InputText>
-          </span>
+              autoComplete="new-password"
+            />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:text-gray-700 focus:outline-none mobile-password-toggle-btn"
+              onClick={() => setMaskPassword(!maskPassword)}
+              title={maskPassword ? "Show password" : "Hide password"}
+            >
+              <i className={`pi ${maskPassword ? "pi-eye" : "pi-eye-slash"} text-lg`}></i>
+            </button>
+          </div>
           <small className="p-error">{passwordError}</small>
-          <div className="mt-2">
+          <div className="mt-3 space-y-1">
             <PasswordPolicy
               text="Minimum of 6 characters"
               valid={isMinLength}
@@ -104,16 +108,11 @@ const SetUpPassword = (props) => {
             />
           </div>
         </div>
-        <div className="w-full mb-4">
-          <p className="m-0">Confirm New Password</p>
-          <span className="w-full p-input-icon-right">
-            <i
-              className={`pi ${maskConfirmPassword ? "pi-eye" : "pi-eye-slash"} cursor-pointer`}
-              title={`${maskConfirmPassword ? "Show" : "Hide"} password`}
-              onMouseDown={() => setMaskConfirmPassword(false)}
-              onMouseUp={() => setMaskConfirmPassword(true)}
-              onMouseLeave={() => setMaskConfirmPassword(true)}
-            />
+        <div className="w-full">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Confirm New Password
+          </label>
+          <div className="relative">
             <InputText
               type={maskConfirmPassword ? "password" : "text"}
               placeholder="Confirm new password"
@@ -124,17 +123,26 @@ const SetUpPassword = (props) => {
               }}
               className={classNames(
                 confirmPasswordError ? "p-invalid" : "",
-                "w-full",
+                "w-full mobile-input pr-12",
               )}
               onKeyDown={onEnter}
-            ></InputText>
-          </span>
+              autoComplete="new-password"
+            />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:text-gray-700 focus:outline-none mobile-password-toggle-btn"
+              onClick={() => setMaskConfirmPassword(!maskConfirmPassword)}
+              title={maskConfirmPassword ? "Show password" : "Hide password"}
+            >
+              <i className={`pi ${maskConfirmPassword ? "pi-eye" : "pi-eye-slash"} text-lg`}></i>
+            </button>
+          </div>
           <small className="p-error">{confirmPasswordError}</small>
         </div>
-        <div className="mt-6">
+        <div className="pt-4">
           <Button
             label="Set up my account"
-            className="w-full !rounded-full py-3 text-[16px]"
+            className="w-full !rounded-full py-3 text-[16px] mobile-setup-btn"
             onClick={onNext}
             loading={loading}
           ></Button>

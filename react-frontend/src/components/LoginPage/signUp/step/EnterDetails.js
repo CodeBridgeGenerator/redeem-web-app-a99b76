@@ -1,76 +1,127 @@
-import { classNames } from "primereact/utils";
-import { InputText } from "primereact/inputtext";
+import React from "react";
 import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
+import { auth, providerForGoogle, isConfigured } from "../../Firebase.config";
+import { signInWithPopup } from "firebase/auth";
 
-const EnterDetailsStep = (props) => {
-  const {
-    email,
-    setEmail,
-    emailError,
-    setEmailError,
-    isVerified,
-    name,
-    setName,
-    nameError,
-    setNameError,
-    onNext,
-    loading,
-  } = props;
+const EnterDetailsStep = ({
+  email,
+  setEmail,
+  emailError,
+  setEmailError,
+  name,
+  setName,
+  nameError,
+  setNameError,
+  onNext,
+  loading,
+  onGoogleSignIn,
+}) => {
+  const handleGoogleSignIn = async () => {
+    if (!isConfigured) {
+      return;
+    }
 
-  const onEnter = (e) => {
-    if (e.key === "Enter") {
-      onNext();
+    try {
+      const result = await signInWithPopup(auth, providerForGoogle);
+      const user = result.user;
+      
+      // Auto-fill the form with Google data
+      setName(user.displayName || user.email.split('@')[0]);
+      setEmail(user.email);
+      setEmailError(null);
+      setNameError(null);
+      
+      // Call the parent's Google sign-in handler
+      if (onGoogleSignIn) {
+        onGoogleSignIn(user);
+      }
+    } catch (error) {
+      console.error("Google sign-in error:", error);
     }
   };
 
   return (
-    <div className="w-full max-w-[400px]">
-      <div className="px-3 text-center">
-        <h3 className="font-semibold">Set up your account</h3>
-        <p>Please enter your name and registered email to proceed.</p>
+    <div className="signup-form-container">
+      <div className="mb-6 text-center">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Create Account</h2>
+        <p className="text-gray-600">Sign up with email or Google</p>
       </div>
-      <div className="mt-5">
-        <div className="w-full">
-          <p className="m-0">Name</p>
-          <InputText
-            type="text"
-            placeholder="Enter your name"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              setNameError(null);
-            }}
-            disabled={isVerified}
-            className={classNames(nameError ? "p-invalid" : "", "w-full")}
-            onKeyDown={onEnter}
-          ></InputText>
-          <small className="p-error">{nameError}</small>
+
+      {/* Google Sign In Button */}
+      <Button
+        type="button"
+        className="w-full mb-4 p-3 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-3 mobile-google-btn"
+        onClick={handleGoogleSignIn}
+        disabled={!isConfigured}
+      >
+        <img 
+          src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+          alt="Google" 
+          className="w-5 h-5"
+        />
+        Continue with Google
+      </Button>
+
+      <div className="relative mb-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-300" />
         </div>
-        <div className="w-full mt-5">
-          <p className="m-0">Email</p>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-2 bg-white text-gray-500">Or continue with email</span>
+        </div>
+      </div>
+
+              <div className="space-y-4">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              Username
+            </label>
+            <InputText
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className={`w-full p-3 border rounded-lg mobile-input ${
+                nameError ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder="Enter your username"
+              autoComplete="username"
+            />
+            {nameError && (
+              <p className="mt-1 text-sm text-red-600">{nameError}</p>
+            )}
+          </div>
+
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            Email Address
+          </label>
           <InputText
-            className={classNames(emailError ? "p-invalid" : "", "w-full")}
-            type="text"
-            placeholder="Enter your email"
+            id="email"
+            type="email"
             value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setEmailError(null);
-            }}
-            onKeyDown={onEnter}
+            onChange={(e) => setEmail(e.target.value)}
+            className={`w-full p-3 border rounded-lg mobile-input ${
+              emailError ? "border-red-500" : "border-gray-300"
+            }`}
+            placeholder="Enter your email address"
+            autoComplete="email"
           />
-          <small className="p-error">{emailError}</small>
+          {emailError && (
+            <p className="mt-1 text-sm text-red-600">{emailError}</p>
+          )}
         </div>
       </div>
-      <div className="flex mt-7 justify-content-center">
-        <Button
-          label="Next"
-          className="w-full py-3 p-button-raised p-button-rounded"
-          onClick={onNext}
-          disabled={!email || !name}
-          loading={loading}
-        ></Button>
-      </div>
+
+      <Button
+        type="button"
+        onClick={onNext}
+        disabled={loading || !name.trim() || !email.trim()}
+        className="w-full mt-6 p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed mobile-continue-btn"
+      >
+        {loading ? "Processing..." : "Continue"}
+      </Button>
     </div>
   );
 };

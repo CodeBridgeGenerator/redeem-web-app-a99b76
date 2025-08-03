@@ -1,0 +1,65 @@
+const mongoose = require('mongoose');
+const config = require('../config/default.json');
+
+// Connect to MongoDB
+mongoose.connect(config.mongodb, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+// Define the users schema
+const usersSchema = new mongoose.Schema({
+  email: String,
+  username: String,
+  password: String,
+  phoneNumber: String,
+  profileImage: String,
+  address: String,
+  aboutMe: String,
+  points: Number,
+  isActive: Boolean,
+  createdAt: Date,
+  updatedAt: Date
+}, {
+  timestamps: true,
+});
+
+const Users = mongoose.model('users', usersSchema);
+
+async function testProfileImage() {
+  try {
+    const user = await Users.findOne({ 
+      email: 'khalidah.t4@gmail.com' 
+    });
+
+    if (user) {
+      console.log('Admin user profile data:');
+      console.log({
+        email: user.email,
+        username: user.username,
+        phoneNumber: user.phoneNumber,
+        profileImage: user.profileImage ? 'Present' : 'Missing',
+        address: user.address,
+        aboutMe: user.aboutMe,
+        points: user.points,
+        isActive: user.isActive
+      });
+      
+      if (user.profileImage) {
+        console.log('✅ Profile image URL exists');
+        console.log('Image URL type:', user.profileImage.startsWith('data:') ? 'Base64' : 'External URL');
+        console.log('Image URL length:', user.profileImage.length);
+      } else {
+        console.log('❌ No profile image found');
+      }
+    } else {
+      console.log('No admin user found');
+    }
+  } catch (error) {
+    console.error('Error testing profile image:', error);
+  } finally {
+    mongoose.connection.close();
+  }
+}
+
+testProfileImage(); 

@@ -12,11 +12,13 @@
 		"@testing-library/react": "^13.4.0",
 		"@testing-library/user-event": "^13.5.0",
 		"axios": "^1.5.0",
-		"chart.js": "^4.4.3",
+		"chart.js": "^4.5.0",
 		"classnames": "^2.2.6",
 		"env-cmd": "^10.1.0",
-		"firebase": "^10.14.0",
+		"firebase": "^10.14.1",
 		"framer-motion": "^11.11.1",
+		"html2canvas": "^1.4.1",
+		"jspdf": "^3.0.1",
 		"lodash": "^4.17.21",
 		"moment": "^2.29.4",
 		"prettier": "^3.0.3",
@@ -24,8 +26,10 @@
 		"primeicons": "^7.0.0",
 		"primereact": "^10.8.3",
 		"prismjs": "^1.29.0",
+		"qrcode": "^1.5.4",
 		"quill": "^2.0.2",
 		"react": "^18.2.0",
+		"react-chartjs-2": "^5.3.0",
 		"react-dom": "^18.2.0",
 		"react-popper": "^2.3.0",
 		"react-redux": "^8.1.2",
@@ -53,7 +57,8 @@
 		"build:prod": "set \"GENERATE_SOURCEMAP=false\" && env-cmd -f .env_prd react-scripts build",
 		"welcome": "\"echo \"Welcome to CodeBridge Ai Code Generator\" \"",
 		"launch:mac": "npm i && npm run format && npm run start",
-		"launch": "npm run --silent cmd && npm install --quiet --no-progress && npm run welcome && npm run format && npm run start"
+		"launch": "npm run --silent cmd && npm install --quiet --no-progress && npm run welcome && npm run format && npm run start",
+		"setup:firebase": "node ../setup-firebase.js"
 	},
 	"eslintConfig": {
 		"extends": []

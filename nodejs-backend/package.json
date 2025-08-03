@@ -50,7 +50,7 @@
     "dependencies": {
         "@aws-sdk/client-s3": "^3.658.1",
         "@feathersjs/authentication": "^4.5.11",
-        "@feathersjs/authentication-local": "^4.5.11",
+        "@feathersjs/authentication-local": "^5.0.34",
         "@feathersjs/authentication-oauth": "^4.5.11",
         "@feathersjs/configuration": "^4.5.11",
         "@feathersjs/errors": "^4.5.11",
@@ -59,6 +59,7 @@
         "@feathersjs/socketio": "^4.5.11",
         "@feathersjs/transport-commons": "^4.5.11",
         "axios": "^0.27.2",
+        "bcryptjs": "^3.0.2",
         "bull": "^4.13.1",
         "bullmq": "^5.15.0",
         "compression": "^1.7.4",

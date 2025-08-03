@@ -1,0 +1,170 @@
+.custom-header {
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 70px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.logo h2 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.main-nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.nav-button {
+  background: transparent;
+  border: none;
+  color: #666;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.nav-button:hover {
+  background: #f8f9fa;
+  color: #333;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+
+.profile-incomplete-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  z-index: 10;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.points-display {
+  background: #4ecdc4;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.profile-button {
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.profile-button:hover {
+  background-color: #f8f9fa;
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  border: 2px solid #e0e0e0;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.username {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.role-badge {
+  padding: 0.125rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.role-badge.admin {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+.role-badge.user {
+  background-color: #4ecdc4;
+  color: white;
+}
+
+.role-badge.manager {
+  background-color: #ffa726;
+  color: white;
+}
+
+.role-badge.supervisor {
+  background-color: #ab47bc;
+  color: white;
+}
+
+.user-menu {
+  min-width: 200px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0 1rem;
+  }
+  
+  .header-left {
+    gap: 1rem;
+  }
+  
+  .main-nav {
+    display: none; /* Hide nav buttons on mobile */
+  }
+  
+  .points-display {
+    display: none; /* Hide points on mobile */
+  }
+  
+  .user-details {
+    display: none; /* Hide user details on mobile */
+  }
+} 

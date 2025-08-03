@@ -8,10 +8,10 @@ const Step = ({ label, step, className }) => {
   const isCompleted = step < currentStep;
 
   return (
-    <div className={classNames("flex items-center", className)}>
+    <div className={classNames("flex items-center mobile-step", className)}>
       <span
         className={classNames(
-          "flex items-center justify-center rounded-full size-7 font-semibold flex-shrink-0",
+          "flex items-center justify-center rounded-full size-7 font-semibold flex-shrink-0 mobile-step-circle",
           isCurrent || isCompleted
             ? "bg-primary text-white"
             : "text-grey border-2 border-grey",
@@ -21,7 +21,7 @@ const Step = ({ label, step, className }) => {
       </span>
       <p
         className={classNames(
-          "ml-2 font-semibold",
+          "ml-2 font-semibold mobile-step-label",
           isCurrent || isCompleted ? "text-black" : "text-grey",
         )}
       >

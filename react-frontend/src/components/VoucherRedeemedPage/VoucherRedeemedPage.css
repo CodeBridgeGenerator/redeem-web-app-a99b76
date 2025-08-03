@@ -1,0 +1,378 @@
+/* Voucher Redeemed Page Styles */
+.voucher-redeemed-page {
+  font-family: "Public Sans", "Noto Sans", sans-serif;
+}
+
+/* Success icon animation */
+.success-icon {
+  animation: bounce 0.6s ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* QR code image styling */
+.qr-code-image {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border: 2px solid #e5e7eb;
+}
+
+.qr-code-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.05) 100%);
+  pointer-events: none;
+}
+
+/* Download button hover effects */
+.download-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(11, 108, 218, 0.3);
+}
+
+.primary-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(11, 108, 218, 0.3);
+}
+
+.secondary-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(11, 108, 218, 0.1);
+}
+
+.download-btn:active,
+.primary-btn:active,
+.secondary-btn:active {
+  transform: scale(1);
+}
+
+/* Back button styling */
+.back-button:hover,
+.home-link:hover {
+  transform: translateX(-2px);
+}
+
+/* Success message styling */
+.success-message {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Page title animation */
+.page-title {
+  animation: slideInLeft 0.6s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Voucher details card */
+.voucher-details-card {
+  animation: fadeIn 0.8s ease-out;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .voucher-redeemed-page header {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .voucher-redeemed-page .main-content {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .voucher-redeemed-page .page-title {
+    font-size: 1.75rem !important;
+    min-width: auto !important;
+  }
+  
+  .voucher-redeemed-page .nav-links {
+    gap: 0.5rem !important;
+  }
+  
+  .voucher-redeemed-page .nav-links a {
+    font-size: 0.875rem !important;
+  }
+  
+  .voucher-redeemed-page .action-buttons {
+    flex-direction: column !important;
+  }
+  
+  .voucher-redeemed-page .navigation-links {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .voucher-redeemed-page .page-title {
+    font-size: 1.5rem !important;
+  }
+  
+  .voucher-redeemed-page .qr-code-section {
+    flex-direction: column !important;
+  }
+  
+  .voucher-redeemed-page .qr-code-image {
+    aspect-ratio: 1/1 !important;
+  }
+  
+  .voucher-redeemed-page .success-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+}
+
+/* Loading animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Smooth transitions */
+.download-btn,
+.primary-btn,
+.secondary-btn {
+  transition: all 0.2s ease;
+}
+
+.back-button,
+.home-link {
+  transition: all 0.2s ease;
+}
+
+.nav-links a {
+  transition: all 0.2s ease;
+}
+
+/* Focus states for accessibility */
+.download-btn:focus,
+.primary-btn:focus,
+.secondary-btn:focus {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.back-button:focus,
+.home-link:focus {
+  outline: 2px solid #0b6cda;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.nav-links a:focus {
+  outline: 2px solid #0b6cda;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Success state styling */
+.success-state {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 1rem;
+}
+
+/* QR code container */
+.qr-code-container {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Voucher details grid */
+.voucher-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.voucher-detail-item {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: #f8fafc;
+  transition: background-color 0.2s ease;
+}
+
+.voucher-detail-item:hover {
+  background: #f1f5f9;
+}
+
+.voucher-detail-label {
+  color: #49709c;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.voucher-detail-value {
+  color: #0d141c;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Action buttons container */
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Navigation links container */
+.navigation-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Empty state styling */
+.empty-state {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 1rem;
+}
+
+/* Notification button styling */
+.notification-btn {
+  transition: all 0.2s ease;
+}
+
+.notification-btn:hover {
+  background-color: #d1d5db !important;
+}
+
+/* Container queries for responsive layout */
+@container (min-width: 768px) {
+  .qr-code-section {
+    flex-direction: row;
+  }
+  
+  .qr-code-image {
+    flex: 1;
+  }
+  
+  .qr-code-details {
+    flex: 1;
+    padding-left: 1rem;
+  }
+}
+
+/* Grid subgrid support */
+@supports (grid-template-columns: subgrid) {
+  .voucher-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+}
+
+/* Fallback for browsers without subgrid support */
+@supports not (grid-template-columns: subgrid) {
+  .voucher-details-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .voucher-detail-item {
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
+/* Print styles for QR code */
+@media print {
+  .voucher-redeemed-page header,
+  .voucher-redeemed-page .action-buttons,
+  .voucher-redeemed-page .navigation-links {
+    display: none !important;
+  }
+  
+  .qr-code-image {
+    border: 2px solid #000 !important;
+    background: white !important;
+  }
+  
+  .voucher-redeemed-page {
+    background: white !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .qr-code-image {
+    border: 3px solid #000 !important;
+  }
+  
+  .voucher-detail-item {
+    border: 1px solid #000 !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .success-icon,
+  .success-message,
+  .page-title,
+  .voucher-details-card {
+    animation: none !important;
+  }
+  
+  .download-btn,
+  .primary-btn,
+  .secondary-btn,
+  .back-button,
+  .home-link {
+    transition: none !important;
+  }
+} 

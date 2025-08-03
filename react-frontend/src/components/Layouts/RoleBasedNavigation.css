@@ -1,0 +1,158 @@
+.role-based-navigation {
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 1rem 2rem;
+}
+
+.nav-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.nav-brand h2 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+
+.profile-incomplete-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  z-index: 10;
+}
+
+.profile-button {
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.profile-button:hover {
+  background-color: #f8f9fa;
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  border: 2px solid #e0e0e0;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.username {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.role-badge {
+  padding: 0.125rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.role-badge.admin {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+.role-badge.user {
+  background-color: #4ecdc4;
+  color: white;
+}
+
+.user-menu {
+  min-width: 200px;
+}
+
+.nav-content {
+  padding: 1rem 0;
+}
+
+.admin-dashboard,
+.user-dashboard {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.admin-dashboard h3,
+.user-dashboard h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.25rem;
+}
+
+.admin-stats,
+.user-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.stat-card h4 {
+  margin: 0 0 0.5rem 0;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .role-based-navigation {
+    padding: 1rem;
+  }
+  
+  .nav-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .nav-user {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .admin-stats,
+  .user-stats {
+    grid-template-columns: 1fr;
+  }
+} 

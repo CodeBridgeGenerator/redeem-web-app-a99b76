@@ -15,6 +15,17 @@ module.exports = function (app) {
         index: true,
         trim: true,
       },
+      username: {
+        type: String,
+        required: false,
+        unique: false,
+        lowercase: false,
+        uppercase: false,
+        minLength: 2,
+        maxLength: 100,
+        index: true,
+        trim: true,
+      },
       email: {
         type: String,
         required: true,
@@ -28,7 +39,7 @@ module.exports = function (app) {
       },
       password: {
         type: String,
-        required: true,
+        required: false, // Made optional for OAuth users
         unique: false,
         lowercase: false,
         uppercase: false,
@@ -37,7 +48,77 @@ module.exports = function (app) {
         index: true,
         trim: true,
       },
-      status: { type: Boolean, required: false, default: true },
+      isActive: { type: Boolean, required: false, default: true },
+      // OAuth provider fields
+      provider: {
+        type: String,
+        required: false,
+        enum: ['local', 'google', 'facebook', 'github', 'apple', 'microsoft'],
+        default: 'local'
+      },
+      providerId: {
+        type: String,
+        required: false,
+        unique: false,
+        index: true,
+        trim: true,
+      },
+      oauthPassword: {
+        type: String,
+        required: false,
+        unique: false,
+        lowercase: false,
+        uppercase: false,
+        minLength: 5,
+        maxLength: 300,
+        index: true,
+        trim: true,
+      },
+      profilePicture: {
+        type: String,
+        required: false,
+        trim: true,
+      },
+      profileImage: {
+        type: String,
+        required: false,
+        trim: true,
+      },
+      emailVerified: {
+        type: Boolean,
+        default: false,
+      },
+      lastLoginAt: {
+        type: Date,
+        default: Date.now,
+      },
+      // Additional user fields
+      phoneNumber: {
+        type: String,
+        required: false,
+        trim: true,
+      },
+      points: {
+        type: Number,
+        required: false,
+        default: 0,
+      },
+      aboutMe: {
+        type: String,
+        required: false,
+        trim: true,
+      },
+      dateOfBirth: {
+        type: Date,
+        required: false,
+      },
+      address: {
+        street: String,
+        city: String,
+        state: String,
+        country: String,
+        zipCode: String,
+      },
     },
     {
       timestamps: true,

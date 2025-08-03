@@ -1,5 +1,3 @@
-const { Service } = require('feathers-mongoose');
+const { Service } = require("feathers-mongoose");
 
-exports.CartItems = class CartItems extends Service {
-  
-};
+exports.CartItems = class CartItems extends Service {};

@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "primereact/button";
 import { Menu } from "primereact/menu";
 import client from "../../services/restClient";
@@ -13,6 +13,7 @@ import NotificationMenu from "./NotificationMenu.js";
 
 const AppTopbar = (props) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const userMenuRef = useRef(null);
   const [ticker, setTicker] = useState("");
   const label = process.env.REACT_APP_PROJECT_LABEL;
@@ -20,13 +21,14 @@ const AppTopbar = (props) => {
   const [roleNames, setRoleNames] = useState({});
   const [userItems, setUserItems] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [totalPoints, setTotalPoints] = useState(0);
 
-   // Function to initialize cache structure based on profiles and selectedUser
-   const initializeCacheStructure = async () => {
+  // Function to initialize cache structure based on profiles and selectedUser
+  const initializeCacheStructure = async () => {
     try {
       const response = await props.getCache();
       const currentCache = response.results;
-      
+
       // Fetch profiles data from profile service
       const profilesResponse = await client.service("profiles").find({
         query: {
@@ -38,7 +40,7 @@ const AppTopbar = (props) => {
 
       // Build the default cache structure dynamically based on profiles
       const defaultCacheStructure = {
-        profiles: profilesData.map(profile => ({
+        profiles: profilesData.map((profile) => ({
           profileId: profile._id,
           role: profile.position?.roleId || "Unknown Role",
           preferences: {
@@ -53,15 +55,17 @@ const AppTopbar = (props) => {
               },
             ],
             settings: {},
-          }
+          },
         })),
-        selectedUser: selectedUser || profilesData[0]?._id // Set first profile as selected by default
+        selectedUser: selectedUser || profilesData[0]?._id, // Set first profile as selected by default
       };
 
       // Set the cache if it doesn't exist or is missing required fields
       if (!currentCache || !currentCache.profiles) {
         await props.setCache(defaultCacheStructure);
-        console.log("Cache initialized with profile-specific preferences and selected user");
+        console.log(
+          "Cache initialized with profile-specific preferences and selected user",
+        );
       }
     } catch (error) {
       console.error("Error initializing cache structure:", error);
@@ -70,7 +74,66 @@ const AppTopbar = (props) => {
 
   useEffect(() => {
     initializeCacheStructure();
-  }, []); 
+  }, []);
+
+  // Function to fetch and calculate total points for the logged-in user
+  const fetchTotalPoints = async () => {
+    if (!props.isLoggedIn || !props.user?._id) return;
+    
+    try {
+      // Fetch all vouchers for the current user
+      const vouchersResponse = await client.service("voucher").find({
+        query: {
+          userId: props.user._id,
+          $limit: 1000, // Adjust as needed
+        },
+      });
+      
+      // Calculate total points from all vouchers
+      const total = vouchersResponse.data.reduce((sum, voucher) => {
+        return sum + (voucher.points || 0);
+      }, 0);
+      
+      setTotalPoints(total);
+    } catch (error) {
+      console.error("Failed to fetch total points:", error);
+      setTotalPoints(0);
+    }
+  };
+
+  // Fetch points when user logs in
+  useEffect(() => {
+    if (props.isLoggedIn && props.user?._id) {
+      fetchTotalPoints();
+    }
+  }, [props.isLoggedIn, props.user?._id]);
+
+  // Expose fetchTotalPoints function globally for other components to call
+  useEffect(() => {
+    if (props.isLoggedIn) {
+      window.updateUserPoints = fetchTotalPoints;
+    } else {
+      window.updateUserPoints = null;
+    }
+    
+    return () => {
+      window.updateUserPoints = null;
+    };
+  }, [props.isLoggedIn]);
+
+  // Refresh points when window gains focus (user returns to tab)
+  useEffect(() => {
+    const handleFocus = () => {
+      if (props.isLoggedIn && props.user?._id) {
+        fetchTotalPoints();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [props.isLoggedIn, props.user?._id]);
 
   // Handle user patched event only once
   useEffect(() => {
@@ -90,6 +153,14 @@ const AppTopbar = (props) => {
 
   const showMenu = (e) => {
     if (userMenuRef?.current) userMenuRef.current.show(e);
+  };
+
+  // Function to check if a link is active
+  const isActiveLink = (path) => {
+    if (path === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname.startsWith(path);
   };
 
   const fetchRoleNames = async (profiles) => {
@@ -166,23 +237,22 @@ const AppTopbar = (props) => {
       status: "success",
     }));
     setUserItems(formattedUserItems);
-  
+
     // Set only if not already selected
     if (!selectedUser && formattedUserItems[0]) {
       setSelectedUser(formattedUserItems[0].id);
     }
   }, [profiles, roleNames]);
-  
 
   useEffect(() => {
     const updateSelectedUserInCache = async () => {
       try {
         const currentCache = await props.getCache();
-  
+
         if (currentCache && currentCache.selectedUser !== selectedUser) {
           // Merge the existing cache with the new selectedUser field
           const updatedCache = { ...currentCache, selectedUser };
-          
+
           await props.setCache(updatedCache);
           console.log("Cache updated with new selected user:", selectedUser);
         }
@@ -190,11 +260,9 @@ const AppTopbar = (props) => {
         console.error("Error updating cache with selected user:", error);
       }
     };
-  
+
     if (selectedUser) updateSelectedUserInCache();
   }, [selectedUser, props]);
-  
-
 
   const handleUserChange = (e) => {
     const userId = e.target.value;
@@ -253,15 +321,14 @@ const AppTopbar = (props) => {
               checked={selectedUser === user.id}
               onChange={(e) => handleUserChange(e.value)}
             /> */}
-           <input
-  type="radio"
-  id={user.id}
-  name="userRadio"
-  value={user.id}
-  checked={selectedUser === user.id}
-  onChange={(e) => handleUserChange(e)}
-/>
-
+            <input
+              type="radio"
+              id={user.id}
+              name="userRadio"
+              value={user.id}
+              checked={selectedUser === user.id}
+              onChange={(e) => handleUserChange(e)}
+            />
           </div>
         </div>
       ),
@@ -320,7 +387,7 @@ const AppTopbar = (props) => {
 
   return props.isLoggedIn ? (
     <div className="layout-topbar">
-      <Link to="/project">
+      <Link to="/">
         <div className="cursor-pointer min-w-max flex align-items-end">
           <img src={"./assets/logo/cb-logo.svg"} height={30} className="mb-1" />
           <h3
@@ -328,7 +395,7 @@ const AppTopbar = (props) => {
             style={{ fontFamily: "MarlinGeo", fontWeight: "bolder", margin: 0 }}
           >
             <i className="pi pi-menu" style={{ fontSize: "1.5rem" }}></i>{" "}
-            {label !== "" ? label : "My App"}
+            {label !== "" ? label : "Rewards"}
           </h3>
         </div>
       </Link>
@@ -360,6 +427,49 @@ const AppTopbar = (props) => {
             : "")
         }
       >
+        {/* Main Navigation Links */}
+        <li>
+          <Link 
+            to="/" 
+            className={`p-link layout-topbar-button ${isActiveLink('/') ? 'active-link' : ''}`}
+            style={isActiveLink('/') ? { backgroundColor: '#e3f2fd', color: '#1976d2' } : {}}
+          >
+            <i className="pi pi-home" />
+            <span>Home</span>
+          </Link>
+        </li>
+        <li>
+          <Link 
+            to="/categories" 
+            className={`p-link layout-topbar-button ${isActiveLink('/categories') ? 'active-link' : ''}`}
+            style={isActiveLink('/categories') ? { backgroundColor: '#e3f2fd', color: '#1976d2' } : {}}
+          >
+            <i className="pi pi-th-large" />
+            <span>Categories</span>
+          </Link>
+        </li>
+        <li>
+          <Link 
+            to="/cart" 
+            className={`p-link layout-topbar-button ${isActiveLink('/cart') ? 'active-link' : ''}`}
+            style={isActiveLink('/cart') ? { backgroundColor: '#e3f2fd', color: '#1976d2' } : {}}
+          >
+            <i className="pi pi-shopping-cart" />
+            <span>Cart</span>
+          </Link>
+        </li>
+        <li>
+          <Link 
+            to="/redemption-history" 
+            className={`p-link layout-topbar-button ${isActiveLink('/redemption-history') ? 'active-link' : ''}`}
+            style={isActiveLink('/redemption-history') ? { backgroundColor: '#e3f2fd', color: '#1976d2' } : {}}
+          >
+            <i className="pi pi-history" />
+            <span>History</span>
+          </Link>
+        </li>
+
+        {/* Email and Notifications */}
         <Link to="/inbox">
           <Email />
         </Link>
@@ -399,21 +509,40 @@ const AppTopbar = (props) => {
         style={{ width: "310px" }}
       />
       {props.isLoggedIn ? (
-        <Avatar
-          label={
-            props.user.name ? props.user.name.charAt(0).toUpperCase() : " "
-          }
-          className="mr-2 ml-2"
-          shape="circle"
-          onClick={showMenu}
-          aria-controls="user-popup-menu"
-          aria-haspopup
-          style={{
-            borderRadius: "50%",
-            backgroundColor: "#D30000",
-            color: "#ffffff",
-          }}
-        />
+        <>
+          {/* Total Points Display */}
+          <div className="flex align-items-center mr-3">
+            <Tag 
+              value={`${totalPoints.toLocaleString()} Points`}
+              severity="info"
+              className="font-bold cursor-pointer"
+              style={{
+                backgroundColor: "#f0f8ff",
+                color: "#0066cc",
+                border: "1px solid #0066cc",
+                fontSize: "0.875rem",
+                padding: "0.5rem 0.75rem"
+              }}
+              onClick={fetchTotalPoints}
+              title="Click to refresh points"
+            />
+          </div>
+          <Avatar
+            label={
+              props.user.name ? props.user.name.charAt(0).toUpperCase() : " "
+            }
+            className="mr-2 ml-2"
+            shape="circle"
+            onClick={showMenu}
+            aria-controls="user-popup-menu"
+            aria-haspopup
+            style={{
+              borderRadius: "50%",
+              backgroundColor: "#D30000",
+              color: "#ffffff",
+            }}
+          />
+        </>
       ) : (
         <Button
           label="login"

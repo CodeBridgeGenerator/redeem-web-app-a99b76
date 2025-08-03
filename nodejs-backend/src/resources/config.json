@@ -16,13 +16,7 @@
   "stack": [
     {
       "appName": "nodejs-backend",
-      "environments": [
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
+      "environments": [null, null, null, null, null],
       "pathToLogo": {
         "s": "/assets/applications_logos/nodejs-s.png",
         "l": "/assets/applications_logos/nodejs.png"
@@ -33,13 +27,7 @@
     },
     {
       "appName": "react-frontend",
-      "environments": [
-        null,
-        null,
-        null,
-        null,
-        null
-      ],
+      "environments": [null, null, null, null, null],
       "pathToLogo": {
         "s": "/assets/applications_logos/react-s.png",
         "l": "/assets/applications_logos/react.png"
@@ -104,9 +92,7 @@
           "reverse": false,
           "morph": false,
           "through": false,
-          "args": [
-            "8"
-          ],
+          "args": ["8"],
           "auditing": false,
           "warehousing": false,
           "searchable": false,
@@ -470,9 +456,7 @@
           "reverse": false,
           "morph": false,
           "through": false,
-          "args": [
-            "8"
-          ],
+          "args": ["8"],
           "auditing": false,
           "warehousing": false,
           "searchable": false,
@@ -517,9 +501,7 @@
           "reverse": false,
           "morph": false,
           "through": false,
-          "args": [
-            "8"
-          ],
+          "args": ["8"],
           "auditing": false,
           "warehousing": false,
           "searchable": false,
@@ -578,9 +560,7 @@
           "reverse": false,
           "morph": false,
           "through": false,
-          "args": [
-            "8"
-          ],
+          "args": ["8"],
           "auditing": false,
           "warehousing": false,
           "searchable": false,
@@ -618,9 +598,7 @@
           "reverse": false,
           "morph": false,
           "through": false,
-          "args": [
-            "8"
-          ],
+          "args": ["8"],
           "auditing": false,
           "warehousing": false,
           "searchable": false,
@@ -658,9 +636,7 @@
           "reverse": false,
           "morph": false,
           "through": false,
-          "args": [
-            "8"
-          ],
+          "args": ["8"],
           "auditing": false,
           "warehousing": false,
           "searchable": false,
@@ -764,9 +740,7 @@
           "reverse": false,
           "morph": false,
           "through": false,
-          "args": [
-            "8"
-          ],
+          "args": ["8"],
           "auditing": false,
           "warehousing": false,
           "searchable": false,
@@ -811,9 +785,7 @@
           "reverse": false,
           "morph": false,
           "through": false,
-          "args": [
-            "8"
-          ],
+          "args": ["8"],
           "auditing": false,
           "warehousing": false,
           "searchable": false,
@@ -851,9 +823,7 @@
           "reverse": false,
           "morph": false,
           "through": false,
-          "args": [
-            "8"
-          ],
+          "args": ["8"],
           "auditing": false,
           "warehousing": false,
           "searchable": false,

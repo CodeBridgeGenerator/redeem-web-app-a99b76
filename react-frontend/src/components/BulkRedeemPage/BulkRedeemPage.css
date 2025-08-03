@@ -1,0 +1,463 @@
+/* Bulk Redeem Page Styles */
+.bulk-redeem-page {
+  font-family: "Public Sans", "Noto Sans", sans-serif;
+}
+
+/* Success icon animation */
+.success-icon {
+  animation: bounce 0.6s ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Voucher card styling */
+.voucher-card {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.voucher-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* QR code styling */
+.qr-code-container {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.qr-code-container img {
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Download button styling */
+.download-pdf-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(11, 108, 218, 0.3);
+}
+
+.download-pdf-btn:active {
+  transform: scale(1);
+}
+
+.download-pdf-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Back button styling */
+.back-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(11, 108, 218, 0.1);
+}
+
+.back-btn:active {
+  transform: scale(1);
+}
+
+/* Navigation button styling */
+.back-button:hover,
+.home-link:hover {
+  transform: translateX(-2px);
+}
+
+/* Success message styling */
+.success-message {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Page title animation */
+.page-title {
+  animation: slideInLeft 0.6s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Vouchers grid */
+.vouchers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Voucher image styling */
+.voucher-image {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.voucher-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.05) 100%);
+  pointer-events: none;
+}
+
+/* Points display */
+.points-display {
+  color: #111418;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Value badge */
+.value-badge {
+  color: #0b6cda;
+  font-size: 0.875rem;
+  font-weight: 700;
+  background: #eff6ff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+/* Total points styling */
+.total-points {
+  color: #111418;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .bulk-redeem-page header {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .bulk-redeem-page .main-content {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  .bulk-redeem-page .page-title {
+    font-size: 1.75rem !important;
+    min-width: auto !important;
+  }
+  
+  .bulk-redeem-page .nav-links {
+    gap: 0.5rem !important;
+  }
+  
+  .bulk-redeem-page .nav-links a {
+    font-size: 0.875rem !important;
+  }
+  
+  .bulk-redeem-page .vouchers-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .bulk-redeem-page .action-buttons {
+    flex-direction: column !important;
+  }
+  
+  .bulk-redeem-page .navigation-links {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .bulk-redeem-page .page-title {
+    font-size: 1.5rem !important;
+  }
+  
+  .bulk-redeem-page .voucher-card {
+    padding: 1rem !important;
+  }
+  
+  .bulk-redeem-page .qr-code-container img {
+    width: 200px !important;
+    height: 200px !important;
+  }
+  
+  .bulk-redeem-page .success-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+}
+
+/* Loading animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Smooth transitions */
+.download-pdf-btn,
+.back-btn {
+  transition: all 0.2s ease;
+}
+
+.back-button,
+.home-link {
+  transition: all 0.2s ease;
+}
+
+.nav-links a {
+  transition: all 0.2s ease;
+}
+
+/* Focus states for accessibility */
+.download-pdf-btn:focus,
+.back-btn:focus {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.back-button:focus,
+.home-link:focus {
+  outline: 2px solid #0b6cda;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.nav-links a:focus {
+  outline: 2px solid #0b6cda;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Success state styling */
+.success-state {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 1rem;
+}
+
+/* QR code section */
+.qr-code-section {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.qr-code-section h5 {
+  color: #111418;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+
+.qr-code-section p {
+  color: #607285;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.4;
+  margin-top: 0.5rem;
+}
+
+/* Voucher card content */
+.voucher-card-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.voucher-card-image {
+  width: 6rem;
+  height: 6rem;
+  background: center center no-repeat cover;
+  border-radius: 0.5rem;
+  flex-shrink: 0;
+}
+
+.voucher-card-details {
+  flex: 1;
+}
+
+.voucher-card-title {
+  color: #111418;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.voucher-card-description {
+  color: #607285;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+
+.voucher-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+/* Action buttons container */
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.75rem 1rem;
+}
+
+/* Navigation links container */
+.navigation-links {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.75rem 1rem;
+}
+
+/* Empty state styling */
+.empty-state {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 1rem;
+}
+
+/* Notification button styling */
+.notification-btn {
+  transition: all 0.2s ease;
+}
+
+.notification-btn:hover {
+  background-color: #d1d5db !important;
+}
+
+/* Breadcrumb styling */
+.breadcrumb-link {
+  transition: color 0.2s ease;
+}
+
+.breadcrumb-link:hover {
+  text-decoration: underline;
+}
+
+/* Container queries for responsive layout */
+@container (min-width: 768px) {
+  .vouchers-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Grid subgrid support */
+@supports (grid-template-columns: subgrid) {
+  .vouchers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+/* Fallback for browsers without subgrid support */
+@supports not (grid-template-columns: subgrid) {
+  .vouchers-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .bulk-redeem-page header,
+  .bulk-redeem-page .action-buttons,
+  .bulk-redeem-page .navigation-links {
+    display: none !important;
+  }
+  
+  .qr-code-container {
+    border: 2px solid #000 !important;
+    background: white !important;
+  }
+  
+  .bulk-redeem-page {
+    background: white !important;
+  }
+  
+  .voucher-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .voucher-card {
+    border: 1px solid #000 !important;
+  }
+  
+  .qr-code-container {
+    border: 2px solid #000 !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .success-icon,
+  .success-message,
+  .page-title,
+  .voucher-card {
+    animation: none !important;
+  }
+  
+  .download-pdf-btn,
+  .back-btn,
+  .back-button,
+  .home-link {
+    transition: none !important;
+  }
+}
+
+/* Stagger animation for multiple vouchers */
+.voucher-card:nth-child(1) { animation-delay: 0.1s; }
+.voucher-card:nth-child(2) { animation-delay: 0.2s; }
+.voucher-card:nth-child(3) { animation-delay: 0.3s; }
+.voucher-card:nth-child(4) { animation-delay: 0.4s; }
+.voucher-card:nth-child(5) { animation-delay: 0.5s; }
+.voucher-card:nth-child(6) { animation-delay: 0.6s; } 

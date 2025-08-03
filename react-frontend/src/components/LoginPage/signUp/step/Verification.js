@@ -63,7 +63,7 @@ const VerificationStep = (props) => {
         {...events}
         type="number"
         className={classNames(
-          "!w-12 h-16 text-4xl text-center placeholder:text-[#CED4DA] bg-white rounded-md border border-[#DEE2E6] border-solid no-spinner",
+          "mobile-otp-input !w-12 h-16 text-4xl text-center placeholder:text-[#CED4DA] bg-white rounded-md border border-[#DEE2E6] border-solid no-spinner",
           codeError ? "border-red-500" : "",
         )}
         placeholder="0"
@@ -76,15 +76,15 @@ const VerificationStep = (props) => {
   };
 
   return (
-    <div className="w-full max-w-[400px]">
-      <div className="px-3 text-center">
-        <h3 className="font-semibold">Verify your email</h3>
-        <p>
+    <div className="signup-form-container">
+      <div className="text-center mb-6">
+        <h3 className="font-semibold text-xl mb-2">Verify your email</h3>
+        <p className="text-gray-600">
           Please enter the 6-digit code sent to your email. Check your Junk/Spam
           folder if doesn't arrive.
         </p>
       </div>
-      <div className="flex flex-col items-center gap-2 mt-14">
+      <div className="flex flex-col items-center gap-4 mb-6">
         <InputOtp
           value={code}
           onChange={verify}
@@ -92,24 +92,24 @@ const VerificationStep = (props) => {
           inputTemplate={customInput}
         />
       </div>
-      <div className="mt-5 text-center">
+      <div className="text-center mb-6">
         <span
-          className="font-semibold cursor-pointer text-primary"
+          className="font-semibold cursor-pointer text-primary mobile-resend-link"
           onClick={resendCode}
         >
           Resend Code
         </span>
       </div>
       {codeError && (
-        <div className="w-full mt-10 p-4 bg-[#FDE7E9] border-2 border-red-500 border-solid rounded-md flex items-center gap-2">
+        <div className="w-full mb-6 p-4 bg-[#FDE7E9] border-2 border-red-500 border-solid rounded-md flex items-center gap-2">
           <i className="text-xl text-red-500 pi pi-exclamation-circle"></i>
           <p className="font-semibold text-red-500">{codeError}</p>
         </div>
       )}
-      <div className="flex mt-10 justify-content-center">
+      <div className="flex justify-content-center">
         <Button
           label="Next"
-          className="w-full py-3 p-button-raised p-button-rounded"
+          className="w-full py-3 p-button-raised p-button-rounded mobile-next-btn"
           onClick={onNext}
           disabled={!code || code.length !== 6}
           loading={loading}
