@@ -11,7 +11,7 @@ module.exports = (app) => {
 };
 
 const initializeSuperUser = (app) => {
-  const userEmail = ["khalidah.t4@gmail.com"];
+  const userEmail = [process.env.ADMIN_EMAIL || "admin@example.com"];
   app
     .service("userInvites")
     .find({

@@ -4,7 +4,7 @@ const jobQueue = new Queue("createUserProfile", { connection });
 
 // Create and export the worker
 const createUserProfile = (app) => {
-  const superAdmin = "kana.sabaratnam@gmail.com";
+  const superAdmin = process.env.SUPER_ADMIN_EMAIL || "admin@example.com";
   const worker = new Worker(
     "createUserProfile",
     async (job) => {
@@ -94,7 +94,7 @@ const createUserProfile = (app) => {
         name: "on_send_welcome_email",
         type: "userInvitationOnCreateOnLoginQues",
         from: "info@cloudbasha.com",
-        recipients: ["khalidah.t4@gmail.com"],
+        recipients: [process.env.ADMIN_EMAIL || "admin@example.com"],
         status: false,
         data: { ...job.data },
         subject: "login processing failed",

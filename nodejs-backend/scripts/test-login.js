@@ -4,12 +4,12 @@ const BASE_URL = 'http://localhost:3030';
 
 async function testLogin() {
   try {
-    console.log('Testing login for khalidah.t4@gmail.com...');
+    console.log('Testing login for admin user...');
     
     // Test login
     const loginResponse = await axios.post(`${BASE_URL}/authentication`, {
       strategy: 'local',
-      email: 'khalidah.t4@gmail.com',
+      email: process.env.ADMIN_EMAIL || 'admin@example.com',
       password: process.env.ADMIN_PASSWORD || 'admin123' // Use env var or fallback
     });
     
@@ -25,7 +25,7 @@ async function testLogin() {
         Authorization: `Bearer ${token}`
       },
       params: {
-        email: 'khalidah.t4@gmail.com',
+        email: process.env.ADMIN_EMAIL || 'admin@example.com',
         isActive: true
       }
     });
