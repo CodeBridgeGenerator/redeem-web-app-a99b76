@@ -55,6 +55,12 @@ class GithubStrategy extends OAuthStrategy {
 }
 
 module.exports = (app) => {
+  // Allow overriding authentication secret via environment variable
+  const authConfig = app.get('authentication') || {};
+  if (process.env.AUTH_SECRET) {
+    authConfig.secret = process.env.AUTH_SECRET;
+    app.set('authentication', authConfig);
+  }
   const authentication = new AuthenticationService(app);
 
   authentication.register("jwt", new JWTStrategy());

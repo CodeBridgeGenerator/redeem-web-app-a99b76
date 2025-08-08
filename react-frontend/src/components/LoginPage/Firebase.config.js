@@ -9,15 +9,15 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 
-// TODO: Replace with your Firebase config
-// Get these values from your Firebase project settings (voucher-app-62d60)
+// Firebase config via environment variables (do not commit real values)
+// Set these in your environment (REACT_APP_*) before building/running
 const firebaseConfig = {
-  apiKey: "AIzaSyC21xQsrOLApZ-1trsK3_xAGnamqoha0l4",
-  authDomain: "voucher-app-62d60.firebaseapp.com",
-  projectId: "voucher-app-62d60",
-  storageBucket: "voucher-app-62d60.firebasestorage.app",
-  messagingSenderId: "879989522818",
-  appId: "1:879989522818:web:f5e917fdff226f5156cf9b"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "YOUR_API_KEY",
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || "YOUR_AUTH_DOMAIN",
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || "YOUR_PROJECT_ID",
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || "YOUR_STORAGE_BUCKET",
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || "YOUR_SENDER_ID",
+  appId: process.env.REACT_APP_FIREBASE_APP_ID || "YOUR_APP_ID"
 };
 
 // Check if Firebase is properly configured
