@@ -78,7 +78,7 @@ const UserProfileSettings = (props) => {
     setIsProfileComplete(isComplete);
     
     // Determine user role based on email
-    const userRole = user.email === 'khalidah.t4@gmail.com' ? 'admin' : 'user';
+    const userRole = user.email === process.env.REACT_APP_ADMIN_EMAIL ? 'admin' : 'user';
     setUserRole(userRole);
   };
 

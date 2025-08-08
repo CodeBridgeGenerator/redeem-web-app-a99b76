@@ -24,7 +24,7 @@ const Users = mongoose.model('users', usersSchema);
 
 async function resetAdminPassword() {
   try {
-    const newPassword = 'admin123'; // Simple password for testing
+    const newPassword = process.env.ADMIN_PASSWORD || 'admin123'; // Use env var or fallback
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     
     const result = await Users.updateOne(

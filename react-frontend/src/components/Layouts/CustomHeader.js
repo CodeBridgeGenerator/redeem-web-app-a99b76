@@ -41,7 +41,7 @@ const CustomHeader = (props) => {
       }
       
       // Fallback to hardcoded admin check
-      if (props.user.email.toLowerCase() === 'khalidah.t4@gmail.com') {
+              if (props.user.email.toLowerCase() === process.env.REACT_APP_ADMIN_EMAIL) {
         console.log("🔍 Debug - Admin email detected in CustomHeader");
         return 'admin';
       }
@@ -52,7 +52,7 @@ const CustomHeader = (props) => {
       console.error("🔍 Debug - Error checking email roles:", error);
       
       // Special handling for admin user to prevent logout issues
-      if (props.user.email && props.user.email.toLowerCase() === 'khalidah.t4@gmail.com') {
+              if (props.user.email && props.user.email.toLowerCase() === process.env.REACT_APP_ADMIN_EMAIL) {
         console.log("🔍 Debug - Admin user emailRoles check failed, but returning admin role");
         return 'admin';
       }

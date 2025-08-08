@@ -24,7 +24,7 @@ const Users = mongoose.model('users', usersSchema);
 
 async function fixAdminPassword() {
   try {
-    const newPassword = 'admin123';
+    const newPassword = process.env.ADMIN_PASSWORD || 'admin123';
     const hashedPassword = bcrypt.hashSync(newPassword, 10);
     
     console.log('Fixing admin password...');

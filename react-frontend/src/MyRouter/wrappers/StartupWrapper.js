@@ -20,7 +20,7 @@ const StartupWrapper = (props) => {
                 console.log('🔍 Debug - StartupWrapper: OAuth user detected, using stable re-auth');
                 
                 // For admin user, add extra stability
-                if (user.email && user.email.toLowerCase() === 'khalidah.t4@gmail.com') {
+                if (user.email && user.email.toLowerCase() === process.env.REACT_APP_ADMIN_EMAIL) {
                     console.log('🔍 Debug - StartupWrapper: Admin OAuth user detected');
                 }
             }

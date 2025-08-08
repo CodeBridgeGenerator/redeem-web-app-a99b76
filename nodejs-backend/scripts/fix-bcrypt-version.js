@@ -27,7 +27,7 @@ async function fixBcryptVersion() {
     console.log('🔧 Fixing bcrypt version conflict...');
     
     // Set a known password that we can use
-    const newPassword = 'admin123';
+    const newPassword = process.env.ADMIN_PASSWORD || 'admin123';
     const hashedPassword = bcrypt.hashSync(newPassword, 10);
     
     console.log('New password:', newPassword);

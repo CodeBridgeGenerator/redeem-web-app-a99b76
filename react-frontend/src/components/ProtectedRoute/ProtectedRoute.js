@@ -36,7 +36,7 @@ const ProtectedRoute = ({
     }
     
     // Check if this is the specific admin email
-    if (user.email.toLowerCase() === 'khalidah.t4@gmail.com') {
+            if (user.email.toLowerCase() === process.env.REACT_APP_ADMIN_EMAIL) {
       console.log("🔍 Debug - Admin email detected in ProtectedRoute");
       return 'admin';
     }

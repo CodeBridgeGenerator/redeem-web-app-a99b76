@@ -389,8 +389,8 @@ export const auth = {
                this.update({ isLoggedIn: true, user: user });
                console.log("🔍 Debug - OAuth user re-authenticated from localStorage");
                
-               // Special handling for khalidah.t4@gmail.com to prevent logout issues
-               if (user.email && user.email.toLowerCase() === 'khalidah.t4@gmail.com') {
+                       // Special handling for admin user to prevent logout issues
+        if (user.email && user.email.toLowerCase() === process.env.REACT_APP_ADMIN_EMAIL) {
                  console.log("🔍 Debug - Admin user detected, ensuring stable authentication");
                }
                
@@ -412,7 +412,7 @@ export const auth = {
                    // Don't logout - keep the localStorage data
                    
                    // Special logging for admin user
-                   if (user.email && user.email.toLowerCase() === 'khalidah.t4@gmail.com') {
+                   if (user.email && user.email.toLowerCase() === process.env.REACT_APP_ADMIN_EMAIL) {
                      console.log("🔍 Debug - Admin user backend refresh failed, but maintaining login state");
                      console.log("🔍 Debug - Admin user data:", user);
                    }

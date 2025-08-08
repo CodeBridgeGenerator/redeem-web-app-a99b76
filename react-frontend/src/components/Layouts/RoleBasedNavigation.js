@@ -16,7 +16,7 @@ const RoleBasedNavigation = (props) => {
     if (!props.user || !props.user.email) return 'user';
     
     // Role is determined by email only
-    return props.user.email === 'khalidah.t4@gmail.com' ? 'admin' : 'user';
+    return props.user.email === process.env.REACT_APP_ADMIN_EMAIL ? 'admin' : 'user';
   }, [props.user]);
   
   const isProfileComplete = useCallback(() => {

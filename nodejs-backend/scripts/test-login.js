@@ -10,7 +10,7 @@ async function testLogin() {
     const loginResponse = await axios.post(`${BASE_URL}/authentication`, {
       strategy: 'local',
       email: 'khalidah.t4@gmail.com',
-      password: 'admin123' // Updated password
+      password: process.env.ADMIN_PASSWORD || 'admin123' // Use env var or fallback
     });
     
     console.log('Login successful:', {
