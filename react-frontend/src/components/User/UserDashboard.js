@@ -12,6 +12,7 @@ import { Dialog } from 'primereact/dialog';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import client from '../../services/restClient';
+import AIChatbot from '../Chatbot/AIChatbot';
 import './UserDashboard.css';
 
 const UserDashboard = (props) => {
@@ -271,6 +272,9 @@ const UserDashboard = (props) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100" style={{fontFamily: '"Public Sans", "Noto Sans", sans-serif'}}>
       <Toast ref={toastRef} />
+      
+      {/* AI Chatbot */}
+      <AIChatbot />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}

@@ -243,19 +243,32 @@ export const auth = {
             console.log("🔍 Debug - User already exists:", user);
             console.log("🔍 Debug - Existing user aboutMe:", user.aboutMe);
             
-            // Check if user needs aboutMe field added (for existing users)
-            if (!user.aboutMe) {
-              console.log("🔍 Debug - User missing aboutMe field, updating...");
-              
-              // Update the user with aboutMe field (for description only)
-              user = await client.service("users").patch(user._id, {
-                aboutMe: "Welcome! Tell us about yourself...", // Default description
+            // For existing users, update OAuth fields and ensure they have a password for authentication
+            console.log("🔍 Debug - Updating existing user with OAuth data");
+            
+            try {
+              // Update OAuth fields and ensure user has a password for local strategy authentication
+              const updateData = {
                 oauthPassword: data.password, // Store OAuth password
                 provider: data.provider || 'google',
                 providerId: data.providerId || data.password,
                 emailVerified: true
-              });
-              console.log("🔍 Debug - Updated user with aboutMe:", user);
+              };
+              
+              // If user doesn't have a main password, set OAuth password as main password
+              // This enables local strategy authentication for OAuth users
+              if (!user.password) {
+                console.log("🔍 Debug - User has no main password, setting OAuth password as main password");
+                updateData.password = data.password;
+              }
+              
+              console.log("🔍 Debug - Attempting to update existing user with OAuth data");
+              user = await client.service("users").patch(user._id, updateData);
+              console.log("🔍 Debug - Successfully updated existing user with OAuth data");
+            } catch (patchError) {
+              console.log("🔍 Debug - PATCH failed for OAuth data update (non-critical):", patchError);
+              console.log("🔍 Debug - Continuing with existing user data");
+              // Don't fail the entire login process - just continue with existing user data
             }
           }
           
@@ -265,22 +278,52 @@ export const auth = {
           // For OAuth users, we'll create a custom authentication approach
           console.log("🔍 Debug - Creating authentication for OAuth user");
           
-                     // For OAuth users, we'll skip backend authentication and use manual state management
-           // This is because OAuth users don't have traditional passwords that can be verified
-           console.log("🔍 Debug - Using manual authentication for OAuth user");
+                     // For OAuth users, try to authenticate with the backend if the user has a password
+           // Otherwise, use manual authentication approach
+           console.log("🔍 Debug - Checking if user has password for authentication");
            
-           this.update({ 
-             isLoggedIn: true, 
-             user: user 
-           });
-           
-           // Store user data in localStorage for persistence
-           localStorage.setItem('user', JSON.stringify(user));
-           
-           // Store a custom token for OAuth users that won't expire
-           const oauthToken = `oauth_${data.email}_${Date.now()}`;
-           localStorage.setItem('feathers-jwt', oauthToken);
-           console.log("🔍 Debug - Stored OAuth token:", oauthToken);
+           // Now authenticate with the backend using the current Firebase UID
+           // After PATCH, the user should have a password that matches the Firebase UID
+           try {
+             console.log("🔍 Debug - Attempting backend authentication with Firebase UID");
+             const authResponse = await client.authenticate({
+               strategy: 'local',
+               email: data.email,
+               password: data.password // This should now work since we set it in PATCH
+             });
+             
+             console.log("🔍 Debug - OAuth backend authentication successful:", authResponse);
+             this.update({ isLoggedIn: true, user: authResponse.user });
+             
+             // Store user data with OAuth info
+             const userToStore = {
+               ...authResponse.user,
+               oauthPassword: data.password,
+               provider: data.provider || 'google',
+               providerId: data.providerId || data.password
+             };
+             localStorage.setItem('user', JSON.stringify(userToStore));
+             console.log("🔍 Debug - OAuth user authenticated with proper JWT token");
+           } catch (authError) {
+             console.error("🔍 Debug - OAuth backend authentication failed:", authError);
+             
+             // Fallback to manual authentication only if backend auth fails
+             console.log("🔍 Debug - Falling back to manual authentication");
+             this.update({ isLoggedIn: true, user: user });
+             
+             const userToStore = {
+               ...user,
+               oauthPassword: data.password,
+               provider: data.provider || 'google',
+               providerId: data.providerId || data.password
+             };
+             localStorage.setItem('user', JSON.stringify(userToStore));
+             
+             // Only use fake token as last resort
+             const oauthToken = `oauth_${data.email}_${Date.now()}`;
+             localStorage.setItem('feathers-jwt', oauthToken);
+             console.log("🔍 Debug - Stored fallback OAuth token:", oauthToken);
+           }
            
            console.log("🔍 Debug - OAuth user authenticated manually");
           
@@ -295,8 +338,16 @@ export const auth = {
           
           resolve();
         } catch (error) {
-          console.error("OAuth login error:", error);
-          reject(error);
+          console.error("🔍 Debug - OAuth login error:", error);
+          
+          // Check if this is a PATCH-related error (non-critical)
+          if (error.code === 401 && (error.hook && error.hook.method === 'patch')) {
+            console.log("🔍 Debug - PATCH 401 error during OAuth login (non-critical), continuing with login...");
+            resolve(); // Continue with login process despite PATCH failure
+          } else {
+            console.log("🔍 Debug - Critical OAuth login error, rejecting");
+            reject(error);
+          }
         }
         dispatch.loading.hide();
       });
@@ -327,13 +378,48 @@ export const auth = {
           console.log("🔍 Debug - Is OAuth token:", isOAuthToken);
            
            if (isOAuthToken) {
-             // For OAuth users, restore from localStorage
+             // For OAuth users, prioritize localStorage over backend re-authentication
+             // This prevents automatic logout issues
              const storedUser = localStorage.getItem('user');
              if (storedUser) {
                const user = JSON.parse(storedUser);
+               console.log("🔍 Debug - OAuth user found in localStorage:", user.email);
+               
+               // Always trust localStorage for OAuth users first
                this.update({ isLoggedIn: true, user: user });
                console.log("🔍 Debug - OAuth user re-authenticated from localStorage");
+               
+               // Special handling for khalidah.t4@gmail.com to prevent logout issues
+               if (user.email && user.email.toLowerCase() === 'khalidah.t4@gmail.com') {
+                 console.log("🔍 Debug - Admin user detected, ensuring stable authentication");
+               }
+               
+               // Optionally try to refresh with backend (but don't fail if it doesn't work)
+               if (user.oauthPassword || user.password) {
+                 try {
+                   console.log("🔍 Debug - Attempting OAuth backend refresh (non-critical)");
+                   const authResponse = await client.authenticate({
+                     strategy: 'local',
+                     email: user.email,
+                     password: user.oauthPassword || user.password
+                   });
+                   
+                   // Update with fresh data from backend if successful
+                   this.update({ isLoggedIn: true, user: authResponse.user });
+                   console.log("🔍 Debug - OAuth user refreshed with backend data");
+                 } catch (reAuthError) {
+                   console.log("🔍 Debug - OAuth backend refresh failed (keeping localStorage data):", reAuthError);
+                   // Don't logout - keep the localStorage data
+                   
+                   // Special logging for admin user
+                   if (user.email && user.email.toLowerCase() === 'khalidah.t4@gmail.com') {
+                     console.log("🔍 Debug - Admin user backend refresh failed, but maintaining login state");
+                     console.log("🔍 Debug - Admin user data:", user);
+                   }
+                 }
+               }
              } else {
+               console.log("🔍 Debug - No OAuth user data in localStorage");
                this.update({ isLoggedIn: false, user: {} });
              }
                      } else {

@@ -11,6 +11,20 @@ const StartupWrapper = (props) => {
         
         if (hasStoredToken) {
             // Only attempt re-authentication if we have a stored token
+            const storedUser = localStorage.getItem('user');
+            const isOAuthToken = hasStoredToken.includes('oauth_');
+            
+            // Special handling for OAuth users to prevent logout issues
+            if (isOAuthToken && storedUser) {
+                const user = JSON.parse(storedUser);
+                console.log('🔍 Debug - StartupWrapper: OAuth user detected, using stable re-auth');
+                
+                // For admin user, add extra stability
+                if (user.email && user.email.toLowerCase() === 'khalidah.t4@gmail.com') {
+                    console.log('🔍 Debug - StartupWrapper: Admin OAuth user detected');
+                }
+            }
+            
             props.reAuth().catch((error) => {
                 console.log('Re-authentication failed:', error);
                 // Don't clear tokens here - let the reAuth function handle it

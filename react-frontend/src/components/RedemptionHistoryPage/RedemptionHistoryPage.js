@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import client from '../../services/restClient';
+import AIChatbot from '../Chatbot/AIChatbot';
 import './RedemptionHistoryPage.css';
 
 const RedemptionHistoryPage = (props) => {
@@ -130,6 +131,9 @@ const RedemptionHistoryPage = (props) => {
 
   return (
     <div className="main-content px-40 flex flex-1 justify-center py-5">
+      {/* AI Chatbot */}
+      <AIChatbot />
+      
       <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
         {/* Breadcrumb */}
         <div className="flex flex-wrap gap-2 p-4">

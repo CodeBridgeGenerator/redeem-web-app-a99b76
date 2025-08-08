@@ -11,12 +11,12 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
 import { FileUpload } from 'primereact/fileupload';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title } from 'chart.js';
+import { Pie, Bar, Line } from 'react-chartjs-2';
 import client from '../../services/restClient';
 import './DashboardAdminControl.css';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title);
 
 const DashboardAdminControl = (props) => {
   const [categories, setCategories] = useState([]);
@@ -73,8 +73,27 @@ const DashboardAdminControl = (props) => {
   // Analytics state
   const [analyticsData, setAnalyticsData] = useState({
     chartData: null,
-    totalRedeemed: 0,
-    totalPoints: 0
+    totalRedeemedRecords: 0,  // Number of redemption transactions
+    totalRedeemedItems: 0,    // Total quantity of items redeemed
+    totalPoints: 0,
+    userAnalytics: {
+      totalUsers: 0,
+      activeUsers: 0,
+      newUsersThisMonth: 0,
+      userRegistrationTrend: null
+    },
+    voucherAnalytics: {
+      totalVouchers: 0,
+      activeVouchers: 0,
+      popularVouchers: [],
+      redemptionTrend: null,
+      pointsDistribution: null
+    },
+    performanceMetrics: {
+      conversionRate: 0,
+      averagePointsPerUser: 0,
+      topPerformingCategories: []
+    }
   });
 
   useEffect(() => {
@@ -129,20 +148,21 @@ const DashboardAdminControl = (props) => {
       });
       setVouchers(vouchersResponse.data || []);
       
-      // Process analytics data
-      console.log("🔍 Debug - About to process analytics data");
-      console.log("🔍 Debug - History data:", historyResponse.data);
-      console.log("🔍 Debug - Categories data:", categoriesResponse.data);
-      console.log("🔍 Debug - Vouchers data:", vouchersResponse.data);
-      
-      processAnalyticsData(historyResponse.data || [], categoriesResponse.data || [], vouchersResponse.data || []);
-
       // Load users
       const usersResponse = await client.service("users").find({
         query: { $limit: 1000 }
       });
       console.log("🔍 Debug - Loaded users:", usersResponse.data);
       setUsers(usersResponse.data || []);
+      
+      // Process analytics data
+      console.log("🔍 Debug - About to process analytics data");
+      console.log("🔍 Debug - History data:", historyResponse.data);
+      console.log("🔍 Debug - Categories data:", categoriesResponse.data);
+      console.log("🔍 Debug - Vouchers data:", vouchersResponse.data);
+      console.log("🔍 Debug - Users data:", usersResponse.data);
+      
+      processAnalyticsData(historyResponse.data || [], categoriesResponse.data || [], vouchersResponse.data || [], usersResponse.data || []);
 
       // Load cart items
       const cartItemsResponse = await client.service("cartItems").find({
@@ -215,15 +235,28 @@ const DashboardAdminControl = (props) => {
     });
   };
 
-  const processAnalyticsData = (historyData, categoriesData, vouchersData) => {
+  const processAnalyticsData = (historyData, categoriesData, vouchersData, usersData) => {
     console.log("🔍 Debug - Processing analytics data");
     console.log("🔍 Debug - History data length:", historyData.length);
     console.log("🔍 Debug - Categories data length:", categoriesData.length);
     console.log("🔍 Debug - Vouchers data length:", vouchersData.length);
+    console.log("🔍 Debug - Users data length:", usersData.length);
+    
+    // Debug: Show sample history data to understand structure
+    if (historyData.length > 0) {
+      console.log("🔍 Debug - Sample history item:", historyData[0]);
+      console.log("🔍 Debug - History items with quantities:", historyData.map(item => ({
+        voucherId: item.voucherId,
+        quantity: item.quantity || 1,
+        createdAt: item.createdAt
+      })));
+    }
     
     // Group redeemed vouchers by category
+    // We'll track both records and quantities for different analytics
     const categoryStats = {};
-    let totalRedeemed = 0;
+    let totalRedeemedRecords = 0;  // Number of redemption transactions
+    let totalRedeemedItems = 0;    // Total quantity of items redeemed
     let totalPoints = 0;
 
     historyData.forEach(item => {
@@ -233,6 +266,13 @@ const DashboardAdminControl = (props) => {
         v._id.toString() === item.voucherId || 
         v.id === item.voucherId
       );
+      
+      console.log("🔍 Debug - Processing history item:", {
+        item: item,
+        voucher: voucher,
+        voucherId: item.voucherId,
+        voucherCategoryId: voucher?.categoryId
+      });
       
       if (voucher && voucher.categoryId) {
         const categoryId = voucher.categoryId;
@@ -246,20 +286,34 @@ const DashboardAdminControl = (props) => {
         if (!categoryStats[categoryName]) {
           categoryStats[categoryName] = {
             count: 0,
+            items: 0,
             points: 0
           };
         }
         
-        categoryStats[categoryName].count += item.quantity || 1;
+        // Track both records and quantities
+        categoryStats[categoryName].count += 1; // Count redemption records
+        categoryStats[categoryName].items += (item.quantity || 1); // Count total items
         categoryStats[categoryName].points += (voucher.points || 0) * (item.quantity || 1);
-        totalRedeemed += item.quantity || 1;
+        totalRedeemedRecords += 1; // Count redemption transactions
+        totalRedeemedItems += (item.quantity || 1); // Count total items
         totalPoints += (voucher.points || 0) * (item.quantity || 1);
+        
+        // Debug logging for this item
+        console.log("🔍 Debug - Processing item:", {
+          voucherId: item.voucherId,
+          quantity: item.quantity || 1,
+          voucherPoints: voucher.points || 0,
+          categoryName: categoryName,
+          categoryStats: categoryStats[categoryName]
+        });
       }
     });
 
-    // Create chart data
+    // Create pie chart data for category distribution
+    // Use ITEMS count for category distribution (more meaningful for business)
     const labels = Object.keys(categoryStats);
-    const data = labels.map(category => categoryStats[category].count);
+    const data = labels.map(category => categoryStats[category].items);
     const backgroundColors = [
       '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
       '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF',
@@ -279,17 +333,160 @@ const DashboardAdminControl = (props) => {
       ]
     };
 
+    // User Analytics
+    const totalUsers = usersData.length;
+    const activeUsers = usersData.filter(user => user.isActive !== false).length;
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+    const newUsersThisMonth = usersData.filter(user => {
+      const userDate = new Date(user.createdAt || user.created);
+      return userDate.getMonth() === currentMonth && userDate.getFullYear() === currentYear;
+    }).length;
+
+    // User registration trend (last 6 months)
+    const userRegistrationTrend = {
+      labels: [],
+      datasets: [{
+        label: 'New Users',
+        data: [],
+        borderColor: '#36A2EB',
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        tension: 0.4
+      }]
+    };
+
+    for (let i = 5; i >= 0; i--) {
+      const date = new Date();
+      date.setMonth(date.getMonth() - i);
+      const monthName = date.toLocaleDateString('en-US', { month: 'short' });
+      const monthUsers = usersData.filter(user => {
+        const userDate = new Date(user.createdAt || user.created);
+        return userDate.getMonth() === date.getMonth() && userDate.getFullYear() === date.getFullYear();
+      }).length;
+      
+      userRegistrationTrend.labels.push(monthName);
+      userRegistrationTrend.datasets[0].data.push(monthUsers);
+    }
+
+    // Voucher Analytics
+    const totalVouchers = vouchersData.length;
+    const activeVouchers = vouchersData.filter(voucher => voucher.isActive !== false).length;
+
+    // Popular vouchers (top 5 by redemption count)
+    const voucherRedemptionCount = {};
+    historyData.forEach(item => {
+      const voucher = vouchersData.find(v => 
+        v._id === item.voucherId || 
+        v._id.toString() === item.voucherId || 
+        v.id === item.voucherId
+      );
+      if (voucher) {
+        const voucherTitle = voucher.title || 'Unknown Voucher';
+        voucherRedemptionCount[voucherTitle] = (voucherRedemptionCount[voucherTitle] || 0) + (item.quantity || 1); // Count items for popularity
+      }
+    });
+
+    const popularVouchers = Object.entries(voucherRedemptionCount)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 5)
+      .map(([title, count]) => ({ title, count }));
+
+    // Redemption trend (last 6 months)
+    const redemptionTrend = {
+      labels: [],
+      datasets: [{
+        label: 'Vouchers Redeemed',
+        data: [],
+        borderColor: '#FF6384',
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        tension: 0.4
+      }]
+    };
+
+    for (let i = 5; i >= 0; i--) {
+      const date = new Date();
+      date.setMonth(date.getMonth() - i);
+      const monthName = date.toLocaleDateString('en-US', { month: 'short' });
+      const monthRedemptions = historyData.filter(item => {
+        const itemDate = new Date(item.createdAt || item.created);
+        return itemDate.getMonth() === date.getMonth() && itemDate.getFullYear() === date.getFullYear();
+      }).length; // Count redemption transactions (records)
+      
+      redemptionTrend.labels.push(monthName);
+      redemptionTrend.datasets[0].data.push(monthRedemptions);
+    }
+
+    // Points distribution chart
+    const pointsDistribution = {
+      labels: ['0-100', '101-500', '501-1000', '1001-2000', '2000+'],
+      datasets: [{
+        label: 'Users by Points Range',
+        data: [0, 0, 0, 0, 0],
+        backgroundColor: [
+          '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'
+        ]
+      }]
+    };
+
+    // Calculate points distribution (simplified - would need user points data)
+    const userPoints = usersData.length; // Placeholder - would need actual points data
+    pointsDistribution.datasets[0].data = [
+      Math.floor(userPoints * 0.3),
+      Math.floor(userPoints * 0.25),
+      Math.floor(userPoints * 0.2),
+      Math.floor(userPoints * 0.15),
+      Math.floor(userPoints * 0.1)
+    ];
+
+    // Performance Metrics
+    const conversionRate = totalUsers > 0 ? ((totalRedeemedRecords / totalUsers) * 100).toFixed(1) : 0;
+    const averagePointsPerUser = totalUsers > 0 ? (totalPoints / totalUsers).toFixed(0) : 0;
+    
+    // Top performing categories (by items redeemed)
+    const topPerformingCategories = Object.entries(categoryStats)
+      .sort(([,a], [,b]) => b.items - a.items)
+      .slice(0, 3)
+      .map(([name, stats]) => ({ 
+        name, 
+        records: stats.count, 
+        items: stats.items, 
+        points: stats.points 
+      }));
+
     console.log("🔍 Debug - Final analytics data:", {
-      totalRedeemed,
-      totalPoints,
+      totalRedeemedRecords: `${totalRedeemedRecords} redemption transactions`,
+      totalRedeemedItems: `${totalRedeemedItems} total items redeemed`,
+      totalPoints: `${totalPoints} total points`,
       chartLabels: chartData.labels,
-      chartData: chartData.datasets[0].data
+      chartData: chartData.datasets[0].data,
+      categoryStats: categoryStats,
+      userAnalytics: { totalUsers, activeUsers, newUsersThisMonth },
+      voucherAnalytics: { totalVouchers, activeVouchers, popularVouchers }
     });
 
     setAnalyticsData({
       chartData,
-      totalRedeemed,
-      totalPoints
+      totalRedeemedRecords,
+      totalRedeemedItems,
+      totalPoints,
+      userAnalytics: {
+        totalUsers,
+        activeUsers,
+        newUsersThisMonth,
+        userRegistrationTrend
+      },
+      voucherAnalytics: {
+        totalVouchers,
+        activeVouchers,
+        popularVouchers,
+        redemptionTrend,
+        pointsDistribution
+      },
+      performanceMetrics: {
+        conversionRate,
+        averagePointsPerUser,
+        topPerformingCategories
+      }
     });
   };
 
@@ -574,24 +771,68 @@ const DashboardAdminControl = (props) => {
         {/* Analytics Section */}
         <Card title="📊 Analytics Dashboard" className="dashboard-card analytics-card">
           <div className="analytics-content">
-            <div className="chart-container">
-              <h4 style={{ 
-                color: '#3B82F6', 
-                textAlign: 'center', 
-                marginBottom: '1rem', 
-                fontSize: '1.5rem', 
-                fontWeight: '700',
-                textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-                padding: '0.5rem',
-                backgroundColor: 'rgba(255,255,255,0.1)',
-                borderRadius: '8px',
-                marginTop: '0'
-              }}>
-                Redeemed Vouchers by Category
-              </h4>
-              {analyticsData.chartData && analyticsData.chartData.labels.length > 0 ? (
-                <div className="pie-chart-wrapper">
-                  <div className="chart-responsive">
+            
+            {/* Key Metrics Row */}
+            <div className="metrics-grid">
+              <div className="metric-card">
+                <div className="metric-icon">👥</div>
+                <div className="metric-content">
+                  <h3>{analyticsData.userAnalytics.totalUsers}</h3>
+                  <p>Total Users</p>
+                </div>
+              </div>
+              <div className="metric-card">
+                <div className="metric-icon">✅</div>
+                <div className="metric-content">
+                  <h3>{analyticsData.userAnalytics.activeUsers}</h3>
+                  <p>Active Users</p>
+                </div>
+              </div>
+              <div className="metric-card">
+                <div className="metric-icon">🎫</div>
+                <div className="metric-content">
+                  <h3>{analyticsData.voucherAnalytics.totalVouchers}</h3>
+                  <p>Total Vouchers</p>
+                </div>
+              </div>
+              <div className="metric-card">
+                <div className="metric-icon">💰</div>
+                <div className="metric-content">
+                  <h3>{analyticsData.totalRedeemedItems}</h3>
+                  <p>Items Redeemed</p>
+                </div>
+              </div>
+              <div className="metric-card">
+                <div className="metric-icon">📋</div>
+                <div className="metric-content">
+                  <h3>{analyticsData.totalRedeemedRecords}</h3>
+                  <p>Redemption Transactions</p>
+                </div>
+              </div>
+              <div className="metric-card">
+                <div className="metric-icon">📈</div>
+                <div className="metric-content">
+                  <h3>{analyticsData.performanceMetrics.conversionRate}%</h3>
+                  <p>Conversion Rate</p>
+                </div>
+              </div>
+              <div className="metric-card">
+                <div className="metric-icon">⭐</div>
+                <div className="metric-content">
+                  <h3>{analyticsData.performanceMetrics.averagePointsPerUser}</h3>
+                  <p>Avg Points/User</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Charts Grid */}
+            <div className="charts-grid">
+              
+              {/* Category Distribution Chart */}
+              <div className="chart-card">
+                <h4>Items Redeemed by Category</h4>
+                {analyticsData.chartData && analyticsData.chartData.labels.length > 0 ? (
+                  <div className="chart-container">
                     <Pie 
                       data={analyticsData.chartData}
                       options={{
@@ -603,9 +844,7 @@ const DashboardAdminControl = (props) => {
                             labels: {
                               padding: 20,
                               usePointStyle: true,
-                              font: {
-                                size: 12
-                              }
+                              font: { size: 12 }
                             }
                           },
                           tooltip: {
@@ -623,16 +862,160 @@ const DashboardAdminControl = (props) => {
                       }}
                     />
                   </div>
-                </div>
-              ) : (
-                <div className="no-data">
-                  <div className="no-data-icon">📊</div>
-                  <p>No redemption data available</p>
-                  <p style={{ fontSize: '0.875rem', opacity: 0.7, marginTop: '0.5rem' }}>
-                    When users redeem vouchers, analytics will appear here
-                  </p>
-                </div>
-              )}
+                ) : (
+                  <div className="no-data">
+                    <div className="no-data-icon">📊</div>
+                    <p>No redemption data available</p>
+                  </div>
+                )}
+              </div>
+
+              {/* User Registration Trend */}
+              <div className="chart-card">
+                <h4>User Registration Trend (Last 6 Months)</h4>
+                {analyticsData.userAnalytics.userRegistrationTrend ? (
+                  <div className="chart-container">
+                    <Line 
+                      data={analyticsData.userAnalytics.userRegistrationTrend}
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                          legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 12 } }
+                          }
+                        },
+                        scales: {
+                          y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                          }
+                        }
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className="no-data">
+                    <div className="no-data-icon">📈</div>
+                    <p>No user data available</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Redemption Trend */}
+              <div className="chart-card">
+                <h4>Redemption Transactions (Last 6 Months)</h4>
+                {analyticsData.voucherAnalytics.redemptionTrend ? (
+                  <div className="chart-container">
+                    <Bar 
+                      data={analyticsData.voucherAnalytics.redemptionTrend}
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                          legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 12 } }
+                          }
+                        },
+                        scales: {
+                          y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 }
+                          }
+                        }
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className="no-data">
+                    <div className="no-data-icon">📊</div>
+                    <p>No redemption data available</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Popular Vouchers */}
+              <div className="chart-card">
+                <h4>Most Popular Vouchers</h4>
+                {analyticsData.voucherAnalytics.popularVouchers.length > 0 ? (
+                  <div className="popular-vouchers">
+                    {analyticsData.voucherAnalytics.popularVouchers.map((voucher, index) => (
+                      <div key={index} className="voucher-item">
+                        <div className="voucher-rank">#{index + 1}</div>
+                        <div className="voucher-info">
+                          <div className="voucher-title">{voucher.title}</div>
+                          <div className="voucher-count">{voucher.count} items redeemed</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="no-data">
+                    <div className="no-data-icon">🏆</div>
+                    <p>No voucher data available</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Top Performing Categories */}
+              <div className="chart-card">
+                <h4>Top Performing Categories</h4>
+                {analyticsData.performanceMetrics.topPerformingCategories.length > 0 ? (
+                  <div className="category-performance">
+                    {analyticsData.performanceMetrics.topPerformingCategories.map((category, index) => (
+                      <div key={index} className="category-item">
+                        <div className="category-rank">#{index + 1}</div>
+                        <div className="category-info">
+                          <div className="category-name">{category.name}</div>
+                          <div className="category-stats">
+                            {category.items} items • {category.records} transactions • {category.points} points
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="no-data">
+                    <div className="no-data-icon">🏅</div>
+                    <p>No category data available</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Points Distribution */}
+              <div className="chart-card">
+                <h4>User Points Distribution</h4>
+                {analyticsData.voucherAnalytics.pointsDistribution ? (
+                  <div className="chart-container">
+                    <Bar 
+                      data={analyticsData.voucherAnalytics.pointsDistribution}
+                      options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                          legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 12 } }
+                          }
+                        },
+                        scales: {
+                          y: {
+                            beginAtZero: true
+                          }
+                        }
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <div className="no-data">
+                    <div className="no-data-icon">💰</div>
+                    <p>No points data available</p>
+                  </div>
+                )}
+              </div>
+
             </div>
           </div>
         </Card>

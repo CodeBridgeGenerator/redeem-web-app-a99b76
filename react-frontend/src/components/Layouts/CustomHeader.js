@@ -50,10 +50,14 @@ const CustomHeader = (props) => {
       return 'user';
     } catch (error) {
       console.error("🔍 Debug - Error checking email roles:", error);
-      // Fallback to hardcoded admin check
-      if (props.user.email.toLowerCase() === 'khalidah.t4@gmail.com') {
+      
+      // Special handling for admin user to prevent logout issues
+      if (props.user.email && props.user.email.toLowerCase() === 'khalidah.t4@gmail.com') {
+        console.log("🔍 Debug - Admin user emailRoles check failed, but returning admin role");
         return 'admin';
       }
+      
+      console.log("🔍 Debug - EmailRoles check failed for regular user, defaulting to user role");
       return 'user';
     }
   }, [props.user]);

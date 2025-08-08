@@ -127,17 +127,27 @@ const LoginPage = (props) => {
           const existingUserData = existingUser.data[0];
           const hasOAuthPassword = existingUserData.password && existingUserData.password.length > 20;
           
-          // Store OAuth password in dedicated field
+          // Store OAuth password in dedicated field (non-critical operation)
           try {
-            await client.service("users").patch(existingUserData._id, {
+            console.log("🔍 Debug - Attempting to update user with OAuth password");
+            const patchData = {
               oauthPassword: user.uid,
               provider: 'google',
               providerId: user.uid,
               emailVerified: user.emailVerified
-            });
-            console.log("🔍 Debug - Updated user with OAuth password");
+            };
+            
+            // If user doesn't have a main password, set OAuth password as main password
+            if (!existingUserData.password) {
+              console.log("🔍 Debug - User has no main password, setting OAuth password as main password");
+              patchData.password = user.uid;
+            }
+            
+            await client.service("users").patch(existingUserData._id, patchData);
+            console.log("🔍 Debug - Successfully updated user with OAuth password");
           } catch (updateError) {
-            console.log("Failed to update user OAuth password:", updateError);
+            console.log("🔍 Debug - Failed to update user OAuth password (non-critical):", updateError);
+            // Don't throw or propagate this error - it's not critical for login
           }
           
           // Check if user has stored OAuth password
@@ -189,10 +199,26 @@ const LoginPage = (props) => {
       }
     } catch (error) {
       console.error("Google sign-in error:", error);
+      
+      let errorMessage = error.message || "Failed to sign in with Google";
+      
+      // Handle specific Firebase errors with user-friendly messages
+      if (error.code === 'auth/user-disabled') {
+        errorMessage = "This Google account has been disabled. Please contact support or try with a different account.";
+      } else if (error.code === 'auth/popup-blocked') {
+        errorMessage = "Popup was blocked by your browser. Please allow popups for this site and try again.";
+      } else if (error.code === 'auth/popup-closed-by-user') {
+        errorMessage = "Sign-in was cancelled. Please try again.";
+      } else if (error.code === 'auth/network-request-failed') {
+        errorMessage = "Network error. Please check your internet connection and try again.";
+      } else if (error.code === 'auth/account-exists-with-different-credential') {
+        errorMessage = "An account already exists with the same email address but different sign-in credentials.";
+      }
+      
       props.alert({
         title: "Google Sign In Failed",
         type: "error",
-        message: error.message || "Failed to sign in with Google",
+        message: errorMessage,
       });
     }
     setLoading(false);

@@ -380,7 +380,7 @@
 /* Voucher Image Container */
 .voucher-image-container {
   width: 100%;
-  height: 180px;
+  height: 240px;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -617,11 +617,11 @@
   
   .voucher-card-item {
     width: 280px;
-    height: 400px;
+    height: 460px;
   }
   
   .voucher-image-container {
-    height: 160px;
+    height: 200px;
   }
 }
 
@@ -635,12 +635,12 @@
   
   .voucher-card-item {
     width: 260px;
-    height: 380px;
+    height: 440px;
     padding: 1rem;
   }
   
   .voucher-image-container {
-    height: 140px;
+    height: 180px;
   }
   
   .voucher-title {
@@ -665,12 +665,12 @@
   .voucher-card-item {
     width: 100%;
     max-width: 380px;
-    height: 380px;
+    height: 440px;
     margin: 0 auto;
   }
   
   .voucher-image-container {
-    height: 160px;
+    height: 200px;
   }
   
   .voucher-title {

@@ -6,6 +6,7 @@ import { Badge } from 'primereact/badge';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import client from '../../services/restClient';
+import AIChatbot from '../Chatbot/AIChatbot';
 import './CategoriesPage.css';
 
 const CategoriesPage = (props) => {
@@ -84,6 +85,9 @@ const CategoriesPage = (props) => {
   return (
     <div className="relative flex size-full min-h-screen flex-col bg-slate-50 group/design-root overflow-x-hidden" style={{fontFamily: '"Public Sans", "Noto Sans", sans-serif'}}>
       <Toast ref={toastRef} />
+      
+      {/* AI Chatbot */}
+      <AIChatbot />
       
       <div className="layout-container flex h-full grow flex-col">
         {/* Main Content */}

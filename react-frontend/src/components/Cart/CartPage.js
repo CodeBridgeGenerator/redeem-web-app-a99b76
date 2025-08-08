@@ -8,6 +8,7 @@ import QRCode from 'qrcode';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import client from '../../services/restClient';
+import AIChatbot from '../Chatbot/AIChatbot';
 import './CartPage.css';
 
 const CartPage = (props) => {
@@ -371,6 +372,9 @@ const CartPage = (props) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100" style={{fontFamily: '"Public Sans", "Noto Sans", sans-serif'}}>
       <Toast ref={toastRef} />
+      
+      {/* AI Chatbot */}
+      <AIChatbot />
       
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Section */}

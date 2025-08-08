@@ -6,6 +6,7 @@ import { Badge } from 'primereact/badge';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import client from '../../services/restClient';
+import AIChatbot from '../Chatbot/AIChatbot';
 import './VoucherPage.css';
 
 const VoucherPage = (props) => {
@@ -196,6 +197,9 @@ const VoucherPage = (props) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100" style={{fontFamily: '"Public Sans", "Noto Sans", sans-serif'}}>
       <Toast ref={toastRef} />
+      
+      {/* AI Chatbot */}
+      <AIChatbot />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Section */}
