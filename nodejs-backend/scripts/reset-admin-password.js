@@ -28,7 +28,7 @@ async function resetAdminPassword() {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     
     const result = await Users.updateOne(
-      { email: 'khalidah.t4@gmail.com' },
+      { email: process.env.ADMIN_EMAIL || 'admin@example.com' },
       { 
         $set: { 
           password: hashedPassword,

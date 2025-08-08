@@ -23,7 +23,7 @@ const Users = mongoose.model('users', usersSchema);
 
 async function checkCurrentPassword() {
   try {
-    const user = await Users.findOne({ email: 'khalidah.t4@gmail.com' });
+    const user = await Users.findOne({ email: process.env.ADMIN_EMAIL || 'admin@example.com' });
     
     if (user) {
       console.log('User found:');

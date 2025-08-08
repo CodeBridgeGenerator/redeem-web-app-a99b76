@@ -36,7 +36,7 @@ async function setupAdminEmail() {
   try {
     // Check if admin email role already exists
     const existingRole = await EmailRoles.findOne({ 
-      email: 'khalidah.t4@gmail.com' 
+      email: process.env.ADMIN_EMAIL || 'admin@example.com' 
     });
 
     if (existingRole) {
@@ -46,7 +46,7 @@ async function setupAdminEmail() {
 
     // Create admin email role
     const adminRole = new EmailRoles({
-      email: 'khalidah.t4@gmail.com',
+      email: process.env.ADMIN_EMAIL || 'admin@example.com',
       role: 'admin',
       isActive: true
     });

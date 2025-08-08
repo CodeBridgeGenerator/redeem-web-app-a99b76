@@ -24,7 +24,7 @@ const Users = mongoose.model('users', usersSchema);
 async function checkUser() {
   try {
     const user = await Users.findOne({ 
-      email: 'khalidah.t4@gmail.com' 
+      email: process.env.ADMIN_EMAIL || 'admin@example.com' 
     });
 
     if (user) {
@@ -37,7 +37,7 @@ async function checkUser() {
         hasPassword: !!user.password
       });
     } else {
-      console.log('No user found with email: khalidah.t4@gmail.com');
+      console.log('No user found with email:', process.env.ADMIN_EMAIL || 'admin@example.com');
     }
   } catch (error) {
     console.error('Error checking user:', error);

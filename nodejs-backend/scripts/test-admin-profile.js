@@ -29,7 +29,7 @@ const Users = mongoose.model('users', usersSchema);
 async function testAdminProfile() {
   try {
     const user = await Users.findOne({ 
-      email: 'khalidah.t4@gmail.com' 
+      email: process.env.ADMIN_EMAIL || 'admin@example.com' 
     });
 
     if (user) {

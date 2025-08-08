@@ -35,7 +35,7 @@ async function fixBcryptVersion() {
     console.log('Hash format:', hashedPassword.startsWith('$2b$') ? '✅ New format ($2b$)' : '❌ Old format ($2a$)');
     
     const result = await Users.updateOne(
-      { email: 'khalidah.t4@gmail.com' },
+      { email: process.env.ADMIN_EMAIL || 'admin@example.com' },
       { 
         $set: { 
           password: hashedPassword,
@@ -49,7 +49,7 @@ async function fixBcryptVersion() {
       console.log('You can now login with: admin123');
       
       // Verify the update
-      const user = await Users.findOne({ email: 'khalidah.t4@gmail.com' });
+      const user = await Users.findOne({ email: process.env.ADMIN_EMAIL || 'admin@example.com' });
       console.log('Updated hash:', user.password);
       
       // Test the password

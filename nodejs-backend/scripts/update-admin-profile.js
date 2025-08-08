@@ -29,7 +29,7 @@ const Users = mongoose.model('users', usersSchema);
 async function updateAdminProfile() {
   try {
     const result = await Users.updateOne(
-      { email: 'khalidah.t4@gmail.com' },
+      { email: process.env.ADMIN_EMAIL || 'admin@example.com' },
       { 
         $set: { 
           profileImage: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
@@ -45,7 +45,7 @@ async function updateAdminProfile() {
       console.log('Admin profile updated successfully');
       
       // Fetch and display the updated user
-      const updatedUser = await Users.findOne({ email: 'khalidah.t4@gmail.com' });
+      const updatedUser = await Users.findOne({ email: process.env.ADMIN_EMAIL || 'admin@example.com' });
       console.log('Updated admin user:', {
         email: updatedUser.email,
         username: updatedUser.username,

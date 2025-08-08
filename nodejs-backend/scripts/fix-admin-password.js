@@ -32,7 +32,7 @@ async function fixAdminPassword() {
     console.log('New hash:', hashedPassword);
     
     const result = await Users.updateOne(
-      { email: 'khalidah.t4@gmail.com' },
+      { email: process.env.ADMIN_EMAIL || 'admin@example.com' },
       { 
         $set: { 
           password: hashedPassword,
